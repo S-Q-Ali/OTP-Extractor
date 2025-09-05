@@ -1,15 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
-    <title>OTP Sharing</title>
-  </head>
-  <body>
-    <div>
-      <h1>One-Time Password (OTP) Sharing</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Authentication Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="login-screen" class="auth-card active">
+            <div class="card-header">
+                <div class="security-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h2>Secure Login Portal</h2>
+                <p>Sign in to access your dashboard</p>
+            </div>
+            
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="user@example.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="••••••••••" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="primary-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+                
+                <div class="form-footer">
+                    <a href="#" class="forgot-link" onclick="showScreen('forgot-password-screen')">Forgot your password?</a>
+                    <div class="security-notice">
+                        <i class="fas fa-shield-alt"></i>
+                        Protected by end-to-end encryption
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- QR Code Setup Screen -->
+        <div id="qr-setup-screen" class="auth-card">
+            <div class="card-header">
+                <div class="security-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <h2>Setup Two-Factor Authentication</h2>
+                <p>Scan the QR code with your authenticator app</p>
+            </div>
+            
+            <div class="qr-section">
+                <div class="qr-container">
+                    <div class="qr-placeholder">
+                        <i class="fas fa-qrcode"></i>
+                        <p>QR Code will appear here</p>
+                    </div>
+                </div>
+                <p class="qr-instructions">
+                    Scan this QR code with Google Authenticator or Microsoft Authenticator app
+                </p>
+            </div>
+            
+            <button id="continue-to-verification" class="primary-btn">
+                <i class="fas fa-arrow-right"></i>
+                Continue to Verification
+            </button>
+            
+            <div class="form-footer">
+                <div class="terms-notice">
+                    By requesting an OTP, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two-Factor Verification Screen -->
+        <div id="totp-verification-screen" class="auth-card">
+            <div class="card-header">
+                <button class="back-btn" onclick="showScreen('login-screen')">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Login
+                </button>
+                
+                <div class="security-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Two-Factor Verification</h2>
+                <p>Enter the 6-digit code from your authenticator app</p>
+            </div>
+            
+            <form id="totp-form" class="auth-form">
+                <div class="otp-input-container">
+                    <input type="text" maxlength="1" class="otp-input" data-index="0">
+                    <input type="text" maxlength="1" class="otp-input" data-index="1">
+                    <input type="text" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" maxlength="1" class="otp-input" data-index="5">
+                </div>
+                
+                <button type="submit" class="primary-btn">
+                    <i class="fas fa-check"></i>
+                    Verify & Continue
+                </button>
+                
+                <div class="form-footer">
+                    <p>Didn't receive code? <a href="#" id="resend-link">Resend</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- GHL Email Input Screen -->
+        <div id="ghl-email-screen" class="auth-card">
+            <div class="card-header">
+                <div class="security-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h2>Secure OTP Verification</h2>
+                <p>Enter your details below to receive a one-time password for secure access</p>
+            </div>
+            
+            <form id="ghl-form" class="auth-form">
+                <div class="form-group">
+                    <label for="ghl-email">GHL Email Address</label>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="ghl-email" name="ghl-email" placeholder="Enter your GHL email address" required>
+                    </div>
+                    <div class="error-message">Please enter a valid email address</div>
+                </div>
+                
+                <button type="submit" class="primary-btn">
+                    <i class="fas fa-key"></i>
+                    Get OTP
+                </button>
+                
+                <div class="form-footer">
+                    <div class="terms-notice">
+                        By requesting an OTP, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- OTP Result Screen -->
+        <div id="otp-result-screen" class="auth-card">
+            <div class="card-header">
+                <div class="security-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Your Access Code</h2>
+                <p>Use this code to access your GHL dashboard</p>
+            </div>
+            
+            <div class="otp-display">
+                <div class="otp-code" id="generated-otp">123456</div>
+                <p class="otp-email">Generated for: <span id="otp-email-display">user@example.com</span></p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="primary-btn" onclick="copyOTP()">
+                    <i class="fas fa-copy"></i>
+                    Copy Code
+                </button>
+                <button class="secondary-btn" onclick="generateNewOTP()">
+                    <i class="fas fa-refresh"></i>
+                    Generate New
+                </button>
+            </div>
+        </div>
+
+        <!-- Forgot Password Email Input Screen -->
+        <div id="forgot-password-screen" class="auth-card">
+            <div class="card-header">
+                <button class="back-btn" onclick="showScreen('login-screen')">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Login
+                </button>
+                
+                <div class="security-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h2>Reset Password</h2>
+                <p>Enter your registered email address</p>
+            </div>
+            
+            <form id="forgot-password-form" class="auth-form">
+                <div class="form-group">
+                    <label for="forgot-email">Email Address</label>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="forgot-email" name="forgot-email" placeholder="Enter your registered email" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="primary-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Reset Code
+                </button>
+            </form>
+        </div>
+
+        <!-- Forgot Password OTP Verification Screen -->
+        <div id="forgot-password-otp-screen" class="auth-card">
+            <div class="card-header">
+                <button class="back-btn" onclick="showScreen('forgot-password-screen')">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </button>
+                
+                <div class="security-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Verify Reset Code</h2>
+                <p>Enter the 6-digit code sent to your email</p>
+            </div>
+            
+            <form id="forgot-password-otp-form" class="auth-form">
+                <div class="otp-input-container">
+                    <input type="text" maxlength="1" class="otp-input" data-index="0">
+                    <input type="text" maxlength="1" class="otp-input" data-index="1">
+                    <input type="text" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" maxlength="1" class="otp-input" data-index="5">
+                </div>
+                
+                <button type="submit" class="primary-btn">
+                    <i class="fas fa-check"></i>
+                    Verify Code
+                </button>
+                
+                <div class="form-footer">
+                    <p>Didn't receive code? <a href="#" id="resend-forgot-link">Resend</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- New Password Reset Screen -->
+        <div id="new-password-screen" class="auth-card">
+            <div class="card-header">
+                <div class="security-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h2>Set New Password</h2>
+                <p>Create a strong password for your account</p>
+            </div>
+            
+            <form id="new-password-form" class="auth-form">
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="new-password" name="new-password" placeholder="Enter new password" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password" required>
+                    </div>
+                    <div class="error-message">Passwords do not match</div>
+                </div>
+                
+                <button type="submit" class="primary-btn">
+                    <i class="fas fa-check"></i>
+                    Reset Password
+                </button>
+            </form>
+        </div>
+
+        <!-- Success Message -->
+        <div id="success-screen" class="auth-card">
+            <div class="card-header">
+                <div class="security-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Login Successful</h2>
+                <p>You have been successfully authenticated</p>
+            </div>
+            
+            <div class="success-content">
+                <div class="welcome-message">
+                    <h3>Welcome back!</h3>
+                    <p>You can now access your secure dashboard</p>
+                </div>
+                
+                <button class="primary-btn" onclick="restartFlow()">
+                    <i class="fas fa-home"></i>
+                    Go to Dashboard
+                </button>
+            </div>
+        </div>
+
+        <!-- Error/Success Messages -->
+        <div id="message-container" class="message-container"></div>
     </div>
-  </body>
+
+    <!-- Load component scripts -->
+    <script src="components/toastNotification.js"></script>
+    <script src="components/loader.js"></script>
+    <script src="components/otpInput.js"></script>
+    <script src="components/forms/loginForm.js"></script>
+    <script src="components/forms/totpForm.js"></script>
+    <script src="components/forms/ghlEmailForm.js"></script>
+    <script src="components/forms/forgotPasswordForm.js"></script>
+    <script src="components/forms/forgotPasswordOTPForm.js"></script>
+    <script src="components/forms/newPasswordForm.js"></script>
+    
+    <!-- Main application script -->
+    <script src="script.js"></script>
+</body>
 </html>
