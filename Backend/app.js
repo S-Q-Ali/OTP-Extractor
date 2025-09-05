@@ -2,7 +2,7 @@
 
 const express = require("express");
 const app = express();
-const corsMiddleware = require("./middlewares/corsMiddleware.js");
+const corsMiddleware = require("./middlewares/corseMiddleware.js");
 
 // Imported Routes
 const healthRoute = require("./routes/healthRoute.js");
