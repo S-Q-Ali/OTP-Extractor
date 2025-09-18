@@ -6,6 +6,7 @@ const corsMiddleware = require("./middlewares/corseMiddleware.js");
 
 // Imported Routes
 const healthRoute = require("./routes/healthRoute.js");
+const authRoute=require("./routes/authRoute.js")
 
 // MIDDLEWARES
 app.use(corsMiddleware);
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ROUTES
 app.use("/", healthRoute);
+app.use("/auth",authRoute);
 
 //LOCAL SERVER
 const PORT = 3000;
