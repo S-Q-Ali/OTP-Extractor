@@ -33,30 +33,33 @@ class LoginForm {
   }
 
   async handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault(); // ✅ prevent default form submission
 
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const email = emailInput.value;
-    const password = passwordInput.value;
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const nameInput = document.getElementById("name"); // optional name field
+  const email = emailInput.value;
+  const password = passwordInput.value;
+  const name = nameInput?.value || "";
 
-    // Validate email format
-    if (!this.validateEmail(emailInput)) {
-      window.toast?.show("Please enter a valid email address", "error");
-      return;
-    }
-
-    // Validate password length
-    if (!this.validatePassword(passwordInput)) {
-      window.toast?.show("Password must be at least 9 characters", "error");
-      return;
-    }
-
-    // Call the submit callback
-    if (this.onSubmit) {
-      await this.onSubmit(email, password);
-    }
+  // Validate email format
+  if (!this.validateEmail(emailInput)) {
+    window.toast?.show("Please enter a valid email address", "error");
+    return;
   }
+
+  // Validate password length
+  if (!this.validatePassword(passwordInput)) {
+    window.toast?.show("Password must be at least 9 characters", "error");
+    return;
+  }
+
+  // Call the submit callback with name as well
+  if (this.onSubmit) {
+    await this.onSubmit(email, password, name);
+  }
+}
+
 
   validateEmail(input) {
     const email = input.value;
