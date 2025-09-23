@@ -1,23 +1,21 @@
-// src/components/screens/TotpVerificationScreen.jsx - FIXED
-import { useState, useRef } from 'react'
+// src/components/screens/TotpVerificationScreen.jsx
+import { useState, useRef, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import Loader from '../ui/Loader'
-import OtpInput from '../ui/OtpInput'
+import OtpInput from '../ui/OtpInput' // Now uses fixed version
 import { API_ENDPOINTS, apiRequest } from '../../config/api'
+import styles from "../../styles/TOTPVerification/TOTP.module.css"
 
-const TotpVerificationScreen = ({ userEmail, onVerify, onBack, showToast }) => {
+const TotpVerificationScreen = ({ userEmail, onVerify, onBack }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [verificationAttempted, setVerificationAttempted] = useState(false)
   const otpInputRef = useRef()
 
-  const handleSubmit = async (code) => {
-    // Prevent multiple submissions
-    if (verificationAttempted || isLoading) {
-      return
-    }
+  const handleSubmit = useCallback(async (code) => {
+    if (verificationAttempted || isLoading) return
 
-    // Validate code
     if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
-      showToast('Please enter a valid 6-digit code', 'error')
+      toast.error('Please enter a valid 6-digit code')
       return
     }
 
@@ -25,86 +23,60 @@ const TotpVerificationScreen = ({ userEmail, onVerify, onBack, showToast }) => {
     setVerificationAttempted(true)
     
     try {
-      console.log('Verifying TOTP code:', code, 'for email:', userEmail)
-      
       const response = await apiRequest(API_ENDPOINTS.VERIFY_OTP, {
         method: 'POST',
-        body: JSON.stringify({
-          email: userEmail,
-          token: code
-        })
+        body: JSON.stringify({ email: userEmail, token: code })
       })
 
-      console.log('TOTP verification successful:', response)
-      showToast('TOTP verified successfully!', 'success')
+      toast.success('TOTP verified successfully!')
       onVerify(code)
 
     } catch (error) {
-      console.error('TOTP verification failed:', error)
-      showToast(error.message || 'Verification failed. Please try again.', 'error')
-      
-      // Reset for retry
+      toast.error(error.message || 'Verification failed. Please try again.')
       setVerificationAttempted(false)
       
-      // Clear OTP inputs
       if (otpInputRef.current) {
         otpInputRef.current.clearInputs()
       }
-      
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [userEmail, onVerify, verificationAttempted, isLoading])
 
   return (
-    <div id="totp-verification-screen" className="auth-card active">
-      <div className="card-header">
-        <button className="back-btn" onClick={onBack}>
+    <div id="totp-verification-screen" className={`${styles.authCard} ${styles.active}`}>
+      <div className={styles.cardHeader}>
+        <button type="button" className={styles.backBtn} onClick={onBack}>
           <i className="fas fa-arrow-left"></i>
           Back to Login
         </button>
 
-        <div className="security-icon">
+        <div className={styles.securityIcon}>
           <i className="fas fa-shield-alt"></i>
         </div>
         <h2>Two-Factor Verification</h2>
         <p>Enter the 6-digit code from your authenticator app</p>
-        <p style={{ fontSize: '12px', color: '#ccc', marginTop: '5px' }}>
-          Make sure your device time is synchronized
-        </p>
       </div>
 
       <Loader isLoading={isLoading}>
-        <form className="auth-form" onSubmit={(e) => {
-          e.preventDefault()
-          // Prevent form submission from triggering verification
-        }}>
+        <div className={styles.authForm}>
           <OtpInput 
-            onComplete={handleSubmit} 
+            onComplete={handleSubmit}
             ref={otpInputRef}
+            length={6}
           />
           
-          <button 
-            type="button" 
-            className="primary-btn" 
-            disabled={isLoading || verificationAttempted}
-            onClick={() => {
-              // Manual verification trigger if needed
-              const inputs = document.querySelectorAll('.otp-input')
-              const code = Array.from(inputs).map(input => input.value).join('')
-              if (code.length === 6) {
-                handleSubmit(code)
-              }
-            }}
-          >
-            <i className="fas fa-check"></i>
-            Verify & Continue
-          </button>
-
-          <div className="form-footer">
-            <p>Didn't receive code? <a href="#" onClick={() => showToast('Code resent successfully!', 'success')}>Resend</a></p>
+          <div className={styles.formFooter}>
+            <p>Didn't receive code? 
+              <a href="#" onClick={(e) => {
+                e.preventDefault()
+                toast.success('Code resent successfully!')
+              }}>
+                Resend
+              </a>
+            </p>
           </div>
-        </form>
+        </div>
       </Loader>
     </div>
   )
