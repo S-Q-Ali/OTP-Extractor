@@ -1,38 +1,40 @@
 // src/components/screens/QrSetupScreen.jsx
+import styles from "../../styles/QrCode/QrCode.module.css" // Add CSS module import
+
 const QrSetupScreen = ({ userEmail, qrCodeData, onContinue, showToast }) => {
   return (
-    <div id="qr-setup-screen" className="auth-card active">
-      <div className="card-header">
-        <div className="security-icon">
+    <div id="qr-setup-screen" className={`${styles.authCard} ${styles.active}`}>
+      <div className={styles.cardHeader}>
+        <div className={styles.securityIcon}>
           <i className="fas fa-qrcode"></i>
         </div>
         <h2>Setup Two-Factor Authentication</h2>
         <p>Scan the QR code with your authenticator app</p>
       </div>
 
-      <div className="qr-section">
-        <div className="qr-container">
+      <div className={styles.qrSection}>
+        <div className={styles.qrContainer}>
           {qrCodeData ? (
-            <img src={qrCodeData} alt="TOTP QR Code" style={{ width: '200px', height: '200px' }} />
+            <img src={qrCodeData} alt="TOTP QR Code" />
           ) : (
-            <div className="qr-placeholder">
+            <div className={styles.qrPlaceholder}>
               <i className="fas fa-qrcode"></i>
               <p>QR Code will appear here</p>
             </div>
           )}
         </div>
-        <p className="qr-instructions">
+        <p className={styles.qrInstructions}>
           Scan this QR code with Google Authenticator or Microsoft Authenticator app
         </p>
       </div>
 
-      <button onClick={onContinue} className="primary-btn">
+      <button onClick={onContinue} className={styles.primaryBtn}>
         <i className="fas fa-arrow-right"></i>
         Continue to Verification
       </button>
 
-      <div className="form-footer">
-        <div className="terms-notice">
+      <div className={styles.formFooter}>
+        <div className={styles.termsNotice}>
           By requesting an OTP, you agree to our
           <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
         </div>
