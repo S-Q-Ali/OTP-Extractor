@@ -1,7 +1,7 @@
 // src/components/screens/ForgotPasswordScreen.jsx
 import { useState } from 'react'
 import Loader from '../ui/Loader'
-import styles from "../../styles/ForgotPassword/ForgotPassword.module.css"
+import styles from "../../styles/ForgotPassword/Forgot.module.css"
 
 const ForgotPasswordScreen = ({ onRequestCode, onBack, showToast }) => {
   const [email, setEmail] = useState('')
