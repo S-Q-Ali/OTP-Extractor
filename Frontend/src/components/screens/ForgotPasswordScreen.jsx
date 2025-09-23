@@ -1,6 +1,7 @@
 // src/components/screens/ForgotPasswordScreen.jsx
 import { useState } from 'react'
 import Loader from '../ui/Loader'
+import styles from "../../styles/ForgotPassword/ForgotPassword.module.css"
 
 const ForgotPasswordScreen = ({ onRequestCode, onBack, showToast }) => {
   const [email, setEmail] = useState('')
@@ -40,14 +41,14 @@ const ForgotPasswordScreen = ({ onRequestCode, onBack, showToast }) => {
   }
 
   return (
-    <div id="forgot-password-screen" className="auth-card active">
-      <div className="card-header">
-        <button className="back-btn" onClick={onBack}>
+    <div id="forgot-password-screen" className={`${styles.authCard}${styles.active}`}>
+      <div className={styles.cardHeader}>
+        <button className={styles.backBtn} onClick={onBack}>
           <i className="fas fa-arrow-left"></i>
           Back to Login
         </button>
 
-        <div className="security-icon">
+        <div className={styles.securityIcon}>
           <i className="fas fa-key"></i>
         </div>
         <h2>Reset Password</h2>
@@ -55,10 +56,10 @@ const ForgotPasswordScreen = ({ onRequestCode, onBack, showToast }) => {
       </div>
 
       <Loader isLoading={isLoading}>
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
+        <form className= {styles.authForm} onSubmit={handleSubmit}>
+          <div className= {styles.formGroup}>
             <label htmlFor="forgot-email">Email Address</label>
-            <div className="input-field">
+            <div className={styles.inputField}>
               <i className="fas fa-envelope"></i>
               <input
                 type="email"
@@ -67,13 +68,13 @@ const ForgotPasswordScreen = ({ onRequestCode, onBack, showToast }) => {
                 onChange={handleInputChange}
                 placeholder="Enter your registered email"
                 required
-                className={error ? 'error' : ''}
+                className={error ? styles.error : ''}
               />
             </div>
-            {error && <div className="error-message show">{error}</div>}
+            {error && <div className={`${styles.errorMessage}${styles.show}`}>{error}</div>}
           </div>
 
-          <button type="submit" className="primary-btn" disabled={isLoading}>
+          <button type="submit" className={styles.primaryBtn} disabled={isLoading}>
             <i className="fas fa-paper-plane"></i>
             Send Reset Code
           </button>
