@@ -1,82 +1,79 @@
 // src/components/screens/GhlEmailScreen.jsx
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import Loader from '../ui/Loader'
+import styles from "../../styles/GHLForm/GHLForm.module.css" 
 
-const GhlEmailScreen = ({ onRequestOTP, showToast }) => {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
+const GhlEmailScreen = ({ onRequestOTP }) => {
   const [isLoading, setIsLoading] = useState(false)
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm()
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!email.trim()) {
-      setError('Please enter your GHL email address')
-      showToast('Please enter your GHL email address', 'error')
-      return
-    }
-
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address')
-      showToast('Please enter a valid email address', 'error')
-      return
-    }
-
+  const onSubmit = async (data) => {
     setIsLoading(true)
+    
     try {
-      await onRequestOTP(email)
+      await onRequestOTP(data.email)
+      reset()
     } catch (error) {
-      showToast('Failed to generate OTP. Please try again.', 'error')
+      toast.error(error.message || 'Failed to generate OTP')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleInputChange = (e) => {
-    setEmail(e.target.value)
-    if (error) setError('')
-  }
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   return (
-    <div id="ghl-email-screen" className="auth-card active">
-      <div className="card-header">
-        <div className="security-icon">
+    <div id="ghl-email-screen" className={`${styles.authCard} ${styles.active}`}>
+      <div className={styles.cardHeader}>
+        <div className={styles.securityIcon}>
           <i className="fas fa-lock"></i>
         </div>
         <h2>Secure OTP Verification</h2>
-        <p>
-          Enter your details below to receive a one-time password for secure access
-        </p>
+        <p>Enter your details below to receive a one-time password for secure access</p>
       </div>
 
       <Loader isLoading={isLoading}>
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
+        <form className={styles.authForm} onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.formGroup}>
             <label htmlFor="ghl-email">GHL Email Address</label>
-            <div className="input-field">
+            <div className={styles.inputField}>
               <i className="fas fa-envelope"></i>
               <input
                 type="email"
                 id="ghl-email"
-                value={email}
-                onChange={handleInputChange}
+                {...register('email', {
+                  required: 'Email is required',
+                  validate: {
+                    validEmail: (value) => 
+                      validateEmail(value) || 'Please enter a valid email address'
+                  }
+                })}
                 placeholder="Enter your GHL email address"
-                required
-                className={error ? 'error' : ''}
+                className={errors.email ? styles.error : ''}
               />
             </div>
-            {error && <div className="error-message show">{error}</div>}
+            {errors.email && (
+              <div className={`${styles.errorMessage} ${styles.show}`}>
+                {errors.email.message}
+              </div>
+            )}
           </div>
 
-          <button type="submit" className="primary-btn" disabled={isLoading}>
+          <button type="submit" className={styles.primaryBtn} disabled={isLoading}>
             <i className="fas fa-key"></i>
             Get OTP
           </button>
 
-          <div className="form-footer">
-            <div className="terms-notice">
+          <div className={styles.formFooter}>
+            <div className={styles.termsNotice}>
               By requesting an OTP, you agree to our
               <a href="#">Terms of Service</a> and
               <a href="#">Privacy Policy</a>
