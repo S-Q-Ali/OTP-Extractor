@@ -1,0 +1,9 @@
+.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.loading .primary-btn {
+  background: var(--white-20);
+  cursor: not-allowed;
+}
