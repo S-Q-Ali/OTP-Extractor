@@ -183,7 +183,6 @@
   margin-top: 16px;
 }
 
-
 /* Responsive */
 @media (max-width: 480px) {
   .authCard {
@@ -195,8 +194,22 @@
   .authCard {
     padding: 20px 15px;
   }
-  
+
   .cardHeader h2 {
     font-size: 20px;
   }
+}
+
+/* Autofill Fix */
+.formGroup input:-webkit-autofill {
+  background-color: var(--white-20) !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--white-20) inset !important;
+  -webkit-text-fill-color: var(--white) !important;
+  transition: background-color 5000s ease-in-out 0s; /* Prevent yellow flash */
+}
+
+.formGroup input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--white-20) inset,
+    0 0 0 3px rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--turquoise);
 }
