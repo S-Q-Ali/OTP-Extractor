@@ -1,10 +1,12 @@
 /* GHLForm.module.css */
 .authCard {
+  max-width: 380px;           
+    margin: 0 auto;            
   background: var(--white-10);
   backdrop-filter: blur(20px);
   border: 1px solid var(--white-20);
-  border-radius: var(--border-radius);
-  padding: 30px 55px;
+  border-radius: 12px;        
+  padding: 25px 20px;         
   box-shadow: var(--shadow);
   transition: var(--transition);
   display: none;
@@ -212,4 +214,37 @@
   -webkit-box-shadow: 0 0 0 1000px var(--white-20) inset,
   0 0 0 3px rgba(0, 212,255,0.1);
   border-color: var(--turquoise);
+}
+
+
+.otpDisplay {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 20px;            
+  font-weight: 700;           
+  color: var(--turquoise);
+  letter-spacing: 2px;       
+}
+
+/* Copy button */
+.copyBtn {
+  background: var(--white-20);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;          /* bigger click area */
+  font-size: 14px;            /* slightly larger text */
+  font-weight: 500;
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.copyBtn:hover {
+  background: var(--turquoise);
+  color: var(--white);
 }
