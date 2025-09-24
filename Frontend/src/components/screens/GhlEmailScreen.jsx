@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import Loader from '../ui/Loader'
 import styles from "../../styles/GHLForm/GHLForm.module.css" 
 
-const GhlEmailScreen = ({ onRequestOTP }) => {
+const GhlEmailScreen = ({ onRequestOTP, otp, onCopyOTP }) => {
   const [isLoading, setIsLoading] = useState(false)
   
   const {
@@ -63,6 +63,20 @@ const GhlEmailScreen = ({ onRequestOTP }) => {
             {errors.email && (
               <div className={`${styles.errorMessage} ${styles.show}`}>
                 {errors.email.message}
+              </div>
+            )}
+
+            {/* 👇 OTP shown here */}
+            {otp && (
+              <div className={styles.otpDisplay}>
+                <span>Your OTP: <strong>{otp}</strong></span>
+                <button 
+                  type="button" 
+                  className={styles.copyBtn} 
+                  onClick={onCopyOTP}
+                >
+                  <i className="fas fa-copy"></i> Copy
+                </button>
               </div>
             )}
           </div>
