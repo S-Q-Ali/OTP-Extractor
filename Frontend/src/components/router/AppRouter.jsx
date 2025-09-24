@@ -6,7 +6,6 @@ import QrSetupScreen from '../screens/QrSetupScreen'
 import TotpVerificationScreen from '../screens/TotpVerificationScreen'
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen"
 import GhlEmailScreen from '../screens/GhlEmailScreen'
-import GHLTOTP from '../screens/GHLTOTPScreen'
 import { API_ENDPOINTS, apiRequest } from '../../config/api'
 
 const AppRouter = () => {
@@ -62,7 +61,6 @@ const AppRouter = () => {
     setTimeout(() => {
       const otp = Math.floor(100000 + Math.random() * 900000).toString()
       setUserData(prev => ({ ...prev, ghlEmail, generatedOtp: otp }))
-      showScreen('ghlTOTP')
       toast.dismiss()
       toast.success(`Your latest OTP is: ${otp}`)
     }, 1000)
@@ -70,6 +68,8 @@ const AppRouter = () => {
 
   const copyOTP = () => {
     const otpCode = userData?.generatedOtp || ''
+    if (!otpCode) return
+
     navigator.clipboard.writeText(otpCode).then(() => {
       toast.success('OTP copied to clipboard!')
     }).catch(() => {
@@ -133,16 +133,8 @@ const AppRouter = () => {
         return (
           <GhlEmailScreen 
             onRequestOTP={handleGHLRequest}
-          />
-        )
-      case 'ghlTOTP':
-        return (
-          <GHLTOTP 
-            userEmail={userData?.ghlEmail} 
-            otpCode={userData?.generatedOtp} 
-            onCopyOTP={copyOTP} 
-            onGenerateNewOTP={generateNewOTP}
-            onRestart={restartFlow}
+            otp={userData?.generatedOtp}
+            onCopyOTP={copyOTP}
           />
         )
       default:

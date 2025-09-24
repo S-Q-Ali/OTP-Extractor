@@ -825,5 +825,71 @@
       "ip": "::1",
       "method": "totp"
     }
+  },
+  {
+    "timestamp": "2025-09-24T11:06:10.384Z",
+    "action": "login",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-24T11:06:24.193Z",
+    "action": "verify-totp",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-24T11:06:24.208Z",
+    "action": "verify-totp",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-24T11:23:05.887Z",
+    "action": "login",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-24T11:25:52.334Z",
+    "action": "verify-totp",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-24T11:25:52.347Z",
+    "action": "verify-totp",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
   }
 ]
