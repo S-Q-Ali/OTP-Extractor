@@ -1,6 +1,7 @@
 // src/components/screens/NewPasswordScreen.jsx
 import { useState } from 'react'
 import Loader from '../ui/Loader'
+import styles from "../../styles/NewPassword/NewPassword.module.css"
 
 const NewPasswordScreen = ({ onPasswordReset, showToast }) => {
   const [formData, setFormData] = useState({
@@ -57,9 +58,9 @@ const NewPasswordScreen = ({ onPasswordReset, showToast }) => {
   }
 
   return (
-    <div id="new-password-screen" className="auth-card active">
-      <div className="card-header">
-        <div className="security-icon">
+    <div id="new-password-screen" className={`${styles.authCard}${styles.active}`}>
+      <div className={styles.cardHeader}>
+        <div className={styles.securityIcon}>
           <i className="fas fa-lock"></i>
         </div>
         <h2>Set New Password</h2>
@@ -67,10 +68,10 @@ const NewPasswordScreen = ({ onPasswordReset, showToast }) => {
       </div>
 
       <Loader isLoading={isLoading}>
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
+        <form className={styles.authForm} onSubmit={handleSubmit}>
+          <div className={styles.formGroup}>
             <label htmlFor="new-password">New Password</label>
-            <div className="input-field">
+            <div className={styles.inputField}>
               <i className="fas fa-lock"></i>
               <input
                 type="password"
@@ -80,15 +81,15 @@ const NewPasswordScreen = ({ onPasswordReset, showToast }) => {
                 onChange={handleInputChange}
                 placeholder="Enter new password"
                 required
-                className={errors.newPassword ? 'error' : ''}
+                className={errors.newPassword ? styles.error : ''}
               />
             </div>
-            {errors.newPassword && <div className="error-message show">{errors.newPassword}</div>}
+            {errors.newPassword && <div className={`${styles.errorMessage}${styles.show}`}>{errors.newPassword}</div>}
           </div>
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <label htmlFor="confirm-password">Confirm New Password</label>
-            <div className="input-field">
+            <div className={styles.inputField}>
               <i className="fas fa-lock"></i>
               <input
                 type="password"
@@ -98,13 +99,13 @@ const NewPasswordScreen = ({ onPasswordReset, showToast }) => {
                 onChange={handleInputChange}
                 placeholder="Confirm new password"
                 required
-                className={errors.confirmPassword ? 'error' : ''}
+                className={errors.confirmPassword ? styles.error : ''}
               />
             </div>
-            {errors.confirmPassword && <div className="error-message show">{errors.confirmPassword}</div>}
+            {errors.confirmPassword && <div className={`${styles.errorMessage}${styles.show}`}>{errors.confirmPassword}</div>}
           </div>
 
-          <button type="submit" className="primary-btn" disabled={isLoading}>
+          <button type="submit" className={styles.primaryBtn} disabled={isLoading}>
             <i className="fas fa-check"></i>
             Reset Password
           </button>

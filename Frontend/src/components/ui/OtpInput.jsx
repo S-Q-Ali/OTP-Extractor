@@ -1,7 +1,8 @@
 // src/components/ui/OtpInput.jsx - FIXED VERSION
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react'
+import styles from "../../styles/OTPInput/OTPInput.module.css"
 
-const OtpInput = ({ length = 6, onComplete }) => {
+const OtpInput = forwardRef(({ length = 6, onComplete }, ref) => {
   const inputsRef = useRef([])
   const [isComplete, setIsComplete] = useState(false)
 
@@ -18,14 +19,14 @@ const OtpInput = ({ length = 6, onComplete }) => {
     if (!/^\d$/.test(value) && value !== '') return
 
     if (value) {
-      e.target.classList.add('filled')
+      e.target.classList.add(styles.filled)
       
       // Move to next input
       if (index < length - 1) {
         inputsRef.current[index + 1].focus()
       }
     } else {
-      e.target.classList.remove('filled')
+      e.target.classList.remove(styles.filled)
     }
 
     // Check if all inputs are filled
@@ -37,8 +38,8 @@ const OtpInput = ({ length = 6, onComplete }) => {
     if (e.key === 'Backspace' && !e.target.value && index > 0) {
       inputsRef.current[index - 1].focus()
       inputsRef.current[index - 1].value = ''
-      inputsRef.current[index - 1].classList.remove('filled')
-      setIsComplete(false) // Reset completion state
+      inputsRef.current[index - 1].classList.remove(styles.filled)
+      setIsComplete(false)
     }
   }
 
@@ -48,7 +49,7 @@ const OtpInput = ({ length = 6, onComplete }) => {
     
     for (let i = 0; i < Math.min(pasteData.length, length); i++) {
       inputsRef.current[i].value = pasteData[i]
-      inputsRef.current[i].classList.add('filled')
+      inputsRef.current[i].classList.add(styles.filled)
       if (i < length - 1) {
         inputsRef.current[i + 1].focus()
       }
@@ -59,18 +60,19 @@ const OtpInput = ({ length = 6, onComplete }) => {
   const checkCompletion = () => {
     const code = inputsRef.current.map(input => input.value).join('')
     
-    // Only trigger onComplete if we have a full code and haven't already triggered it
     if (code.length === length && !isComplete) {
-      setIsComplete(true) // Prevent multiple triggers
+      setIsComplete(true)
       onComplete(code)
     }
   }
 
-  // Clear all inputs
+  // Clear all inputs - exposed via ref
   const clearInputs = () => {
     inputsRef.current.forEach(input => {
-      input.value = ''
-      input.classList.remove('filled')
+      if (input) {
+        input.value = ''
+        input.classList.remove(styles.filled)
+      }
     })
     setIsComplete(false)
     if (inputsRef.current[0]) {
@@ -78,15 +80,20 @@ const OtpInput = ({ length = 6, onComplete }) => {
     }
   }
 
+  // Expose methods via ref
+  useImperativeHandle(ref, () => ({
+    clearInputs
+  }))
+
   return (
-    <div className="otp-input-container">
+    <div className={styles.otpContainer}>
       {Array.from({ length }, (_, index) => (
         <input
           key={index}
           ref={el => inputsRef.current[index] = el}
           type="text"
           maxLength="1"
-          className="otp-input"
+          className={styles.otpInput}
           onChange={(e) => handleInputChange(e, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
           onPaste={index === 0 ? handlePaste : undefined}
@@ -96,6 +103,8 @@ const OtpInput = ({ length = 6, onComplete }) => {
       ))}
     </div>
   )
-}
+})
+
+OtpInput.displayName = 'OtpInput'
 
 export default OtpInput

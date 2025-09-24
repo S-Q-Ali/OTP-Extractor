@@ -32,13 +32,13 @@ body {
   line-height: 1.6;
 }
 
-.container {
+/* .container {
   width: 100%;
-  max-width: 420px;
+  min-width: 380px;
   position: relative;
-}
+} */
 
-.auth-card {
+/* .auth-card {
   background: var(--white-10);
   backdrop-filter: blur(20px);
   border: 1px solid var(--white-20);
@@ -47,7 +47,7 @@ body {
   box-shadow: var(--shadow);
   transition: var(--transition);
   display: none;
-  animation: slideIn 0.5s ease-out;
+  animation: slideIn 1s ease-out;
 }
 
 .auth-card.active {
@@ -57,7 +57,7 @@ body {
 .auth-card:hover {
   box-shadow: var(--shadow-hover);
   transform: translateY(-2px);
-}
+} */
 
 @keyframes slideIn {
   from {
@@ -70,11 +70,11 @@ body {
   }
 }
 
-.card-header {
+/* .card-header {
   text-align: center;
   margin-bottom: 32px;
   position: relative;
-}
+} */
 
 .back-btn {
   position: absolute;
@@ -98,7 +98,7 @@ body {
   transform: translateX(-2px);
 }
 
-.security-icon {
+/* .security-icon {
   width: 60px;
   height: 60px;
   background: var(--turquoise);
@@ -110,104 +110,104 @@ body {
   font-size: 24px;
   color: var(--white);
   box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
-}
+} */
 
-.security-icon.success {
+/* .security-icon.success {
   background: var(--success-color);
   box-shadow: 0 10px 20px rgba(46, 213, 115, 0.3);
-}
+} */
 
-.card-header h2 {
+/* .card-header h2 {
   color: var(--white);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 8px;
-}
+} */
 
-.card-header p {
+/* .card-header p {
   color: var(--white-80);
   font-size: 14px;
-}
+} */
 
-.auth-form {
+/* .auth-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
+} */
 
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
   position: relative;
-}
+} */
 
-.form-group label {
+/* .form-group label {
   color: var(--white);
   font-size: 14px;
   font-weight: 500;
-}
+} */
 
-.form-group input {
+/* .form-group input {
   background: var(--white-20);
   border: 1px solid var(--white-20);
   border-radius: 8px;
-  padding: 10px 100px;
+  padding: 10px 20px;
   color: var(--white);
   font-size: 16px;
   transition: var(--transition);
-}
+} */
 
-.form-group input::placeholder {
+/* .form-group input::placeholder {
   color: var(--white-80);
-}
+} */
 
-.form-group input:focus {
+/* .form-group input:focus {
   outline: none;
   border-color: var(--turquoise);
   background: var(--white-20);
   box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
-}
+} */
 
-.form-group input.error {
+/* .form-group input.error {
   border-color: var(--error-color);
   box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
-}
+} */
 
-.error-message {
+/* .error-message {
   color: var(--error-color);
   font-size: 12px;
   margin-top: 4px;
   display: none;
-}
+} */
 
-.error-message.show {
+/* .error-message.show {
   display: block;
-}
+} */
 
-.input-field {
+/* .input-field {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
-}
+} */
 
-.input-field i {
+/* .input-field i {
   position: absolute;
   left: 12px;
   color: var(--white-80);
   font-size: 14px;
   z-index: 1;
-}
+} */
 
-.input-field input {
+/* .input-field input {
   padding-left: 40px;
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
-}
+} */
 
-.primary-btn {
+/* .primary-btn {
   background: var(--turquoise);
   border: none;
   border-radius: 8px;
@@ -222,24 +222,24 @@ body {
   justify-content: center;
   gap: 8px;
   margin-top: 8px;
-}
+} */
 
-.primary-btn:hover {
+/* .primary-btn:hover {
   background: var(--turquoise-dark);
   transform: translateY(-1px);
   box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
-}
+} */
 
-.primary-btn:active {
+/* .primary-btn:active {
   transform: translateY(0);
-}
+} */
 
-.primary-btn:disabled {
+/* .primary-btn:disabled {
   background: var(--white-20);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
-}
+} */
 
 .secondary-btn {
   background: var(--white-20);
@@ -262,23 +262,23 @@ body {
   border-color: var(--white-20);
 }
 
-.form-footer {
+/* .form-footer {
   text-align: center;
   margin-top: 20px;
-}
+} */
 
-.forgot-link {
+/* .forgot-link {
   color: var(--white-80);
   text-decoration: none;
   font-size: 14px;
   transition: var(--transition);
-}
+} */
 
-.forgot-link:hover {
+/* .forgot-link:hover {
   color: var(--turquoise);
-}
+} */
 
-.security-notice {
+/* .security-notice {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -286,7 +286,7 @@ body {
   color: var(--white-80);
   font-size: 12px;
   margin-top: 16px;
-}
+} */
 
 .terms-notice {
   color: var(--white-80);
@@ -358,6 +358,7 @@ body {
   justify-content: center;
   margin-bottom: 24px;
 }
+
 
 .otp-input {
   width: 50px;
@@ -468,10 +469,10 @@ body {
   color: var(--white);
 }
 
-.message.error {
+/* .message.error {
   background: var(--error-color);
   color: var(--white);
-}
+} */
 
 .message.info {
   background: var(--turquoise);
@@ -513,9 +514,9 @@ body {
     padding: 0 10px;
   }
 
-  .auth-card {
+  /* .auth-card {
     padding: 30px 20px;
-  }
+  } */
 
   .otp-input-container {
     gap: 8px;
@@ -539,13 +540,13 @@ body {
 }
 
 @media (max-width: 320px) {
-  .auth-card {
+  /* .auth-card {
     padding: 20px 15px;
-  }
+  } */
 
-  .card-header h2 {
+  /* .card-header h2 {
     font-size: 20px;
-  }
+  } */
 
   .otp-input {
     width: 35px;

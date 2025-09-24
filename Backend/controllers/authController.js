@@ -1,40 +1,80 @@
+// controllers/authController.js
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
+const logger = require("../utils/logger");
+const cache = require("../utils/userCache"); // Import the cache
 
 const usersFilePath = path.join(__dirname, "../user.json");
+const CACHE_KEY = "users_data";
+const CACHE_TTL = 180000; // 5 minutes
 
-// Helpers
-const readUsers = () => (fs.existsSync(usersFilePath) ? JSON.parse(fs.readFileSync(usersFilePath)) : { users: {} });
-const writeUsers = (users) => fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+// Helpers with cache support
+const readUsers = () => {
+  // Try to get from cache first
+  const cachedUsers = cache.get(CACHE_KEY);
+  if (cachedUsers) {
+    return cachedUsers;
+  }
 
-// controllers/authController.js - Add better error handling
+  // If not in cache, read from file and cache it
+  const fileUsers = fs.existsSync(usersFilePath)
+    ? JSON.parse(fs.readFileSync(usersFilePath))
+    : { users: {} };
+
+  cache.set(CACHE_KEY, fileUsers, CACHE_TTL);
+  return fileUsers;
+};
+
+const writeUsers = (users) => {
+  // Write to file
+  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+
+  // Update cache
+  cache.set(CACHE_KEY, users, CACHE_TTL);
+};
+
+// Helper to invalidate cache when needed
+const invalidateUsersCache = () => {
+  cache.delete(CACHE_KEY);
+};
+
+
+// Helper to get client IP
+const getClientIp = (req) => {
+  return (
+    req.clientIp ||
+    req.headers["x-forwarded-for"] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    (req.connection.socket ? req.connection.socket.remoteAddress : "unknown")
+  );
+};
+
+// REGISTER (updated with cache invalidation)
 async function register(req, res) {
   try {
     const { email, password, name } = req.body;
 
     if (!email || !password) {
+      await logger.logRegister(email, "failure", "missing_credentials", {
+        ip: getClientIp(req),
+      });
       return res.status(400).json({ message: "Email and password required" });
     }
 
     const users = readUsers();
-    
-    // Check if user already exists with better error message
     if (users.users[email]) {
-      return res.status(400).json({ 
-        message: "User already exists. Please login instead or use a different email.",
-        existingUser: true
+      await logger.logRegister(email, "failure", "user_already_exists", {
+        ip: getClientIp(req),
       });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const secret = speakeasy.generateSecret({ 
-      name: `OTP-App (${email})`,
-      issuer: 'YourAppName' // Add issuer for better QR code
-    });
-    
+    const secret = speakeasy.generateSecret({ name: `OTP-App (${email})` });
     const qrCodeDataUrl = await qrcode.toDataURL(secret.otpauth_url);
 
     users.users[email] = {
@@ -44,187 +84,221 @@ async function register(req, res) {
       secret: secret.base32,
       qrCode: qrCodeDataUrl,
       is_verified: false,
-      created_at: new Date().toISOString()
     };
 
-    writeUsers(users);
-    
-    console.log('✅ New user registered:', email);
-    console.log('🔑 Secret generated:', secret.base32);
-    
-    res.json({ 
-      message: "User registered successfully", 
-      qrCode: qrCodeDataUrl, 
-      email: email,
-      secret: secret.base32 // Include secret for debugging (remove in production)
+    writeUsers(users); // This will update both file and cache
+
+    // Log successful registration
+    await logger.logRegister(email, "success", "new_user_created", {
+      ip: getClientIp(req),
+      has_2fa: true,
     });
-    
+
+    res.json({
+      message: "User registered successfully",
+      qrCode: qrCodeDataUrl,
+      email,
+    });
   } catch (err) {
-    console.error('❌ Registration error:', err);
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    // Invalidate cache on error to ensure consistency
+    invalidateUsersCache();
+
+    await logger.logRegister(req.body.email, "error", "internal_server_error", {
+      ip: getClientIp(req),
+      error: err.message,
+    });
+
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }
 
-// LOGIN
+// LOGIN (benefits from cache)
 async function login(req, res) {
   try {
     const { email, password } = req.body;
-    const users = readUsers();
+    const users = readUsers(); // This will use cache if available
     const user = users.users[email];
 
-    if (!user) return res.status(401).json({ message: "Invalid email or password" });
+    if (!user) {
+      await logger.logLogin(email, "failure", "user_not_found", {
+        ip: getClientIp(req),
+      });
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(401).json({ message: "Invalid email or password" });
+    if (!isPasswordValid) {
+      await logger.logLogin(email, "failure", "invalid_password", {
+        ip: getClientIp(req),
+      });
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Log successful password validation
+    await logger.logLogin(email, "success", "password_valid", {
+      ip: getClientIp(req),
+      requires_otp: true,
+    });
 
     res.json({ message: "Password valid, enter OTP", requiresOtp: true });
   } catch (err) {
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    await logger.logLogin(req.body.email, "error", "internal_server_error", {
+      ip: getClientIp(req),
+      error: err.message,
+    });
+
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }
 
-// VERIFY TOTP - FIXED VERSION
-function verifyTotp(req, res) {
+// VERIFY TOTP (updated with cache)
+async function verifyTotp(req, res) {
   try {
     const { email, token } = req.body;
-    const users = readUsers();
+    const users = readUsers(); // Uses cache
     const user = users.users[email];
 
-    if (!user) return res.status(401).json({ message: "Invalid user" });
+    if (!user) {
+      await logger.logVerifyTotp(email, "failure", "user_not_found", {
+        ip: getClientIp(req),
+        method: "totp",
+      });
+      return res.status(401).json({ message: "Invalid user" });
+    }
 
-    console.log('TOTP Verification Attempt:', {
+    console.log("TOTP Verification Attempt:", {
       email: email,
       token: token,
       secret: user.secret,
-      time: new Date().toISOString()
+      time: new Date().toISOString(),
     });
 
-    // FIX: Use a larger window and add more debugging
     const isValid = speakeasy.totp.verify({
       secret: user.secret,
       encoding: "base32",
       token: token,
-      window: 6, // Increased to 6 (3 steps before and after = 3 minutes total)
-      step: 30
+      window: 6,
+      step: 30,
     });
 
-    // Additional debugging: Generate tokens for a wider range
-    if (!isValid) {
-      console.log('Detailed token analysis for debugging:');
-      for (let i = -5; i <= 5; i++) {
-        const testToken = speakeasy.totp({
-          secret: user.secret,
-          encoding: "base32",
-          time: Date.now() + (i * 30000), // 30-second intervals
-          step: 30
-        });
-        console.log(`Offset ${i * 30} seconds: ${testToken} ${testToken === token ? '← MATCH' : ''}`);
-      }
-    }
-
-    console.log('TOTP Verification Result:', isValid);
+    console.log("TOTP Verification Result:", isValid);
 
     if (!isValid) {
-      // Generate what the server expects right now
+      await logger.logVerifyTotp(email, "failure", "invalid_or_expired_totp", {
+        ip: getClientIp(req),
+        method: "totp",
+        provided_token: token,
+      });
+
       const currentToken = speakeasy.totp({
         secret: user.secret,
         encoding: "base32",
-        step: 30
+        step: 30,
       });
-      
-      console.log('Server expected token around this time:', currentToken);
-      return res.status(401).json({ 
-        message: "Invalid TOTP code. Please ensure: 1) Your device time is synchronized 2) You're using the most recent code 3) You've scanned the correct QR code" 
+
+      console.log("Server expected token around this time:", currentToken);
+      return res.status(401).json({
+        message:
+          "Invalid or expired TOTP. Please make sure your device time is synchronized.",
       });
     }
 
     user.is_verified = true;
-    writeUsers(users);
-    
-    console.log('✅ TOTP Verification Successful for:', email);
-    res.json({ 
-      message: "Login successful ✅", 
-      user: { 
-        email: user.email, 
-        name: user.name 
-      } 
-    });
-    
-  } catch (err) {
-    console.error('❌ TOTP Verification Error:', err);
-    res.status(500).json({ 
-      message: "Server error during verification", 
-      error: err.message 
-    });
-  }
-}
+    writeUsers(users); // Updates both file and cache
 
-// Add a debug endpoint to help troubleshoot
-function debugTOTP(req, res) {
-  try {
-    const { email } = req.body;
-    const users = readUsers();
-    const user = users.users[email];
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    // Generate current and nearby tokens for debugging
-    const currentToken = speakeasy.totp({
-      secret: user.secret,
-      encoding: "base32",
-      step: 30
+    await logger.logVerifyTotp(email, "success", "otp_verified", {
+      ip: getClientIp(req),
+      method: "totp",
     });
 
-    const previousToken = speakeasy.totp({
-      secret: user.secret,
-      encoding: "base32",
-      step: 30,
-      time: Date.now() - 30000 // 30 seconds ago
-    });
-
-    const nextToken = speakeasy.totp({
-      secret: user.secret,
-      encoding: "base32",
-      step: 30,
-      time: Date.now() + 30000 // 30 seconds from now
-    });
-
+    console.log("✅ TOTP Verification Successful for:", email);
     res.json({
-      email: email,
-      secret: user.secret,
-      currentToken: currentToken,
-      previousToken: previousToken,
-      nextToken: nextToken,
-      serverTime: new Date().toISOString(),
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      message: "Login successful ✅",
+      user: {
+        email: user.email,
+        name: user.name,
+      },
     });
-
   } catch (err) {
-    res.status(500).json({ message: "Debug error", error: err.message });
+    invalidateUsersCache(); // Invalidate cache on error
+
+    await logger.logVerifyTotp(
+      req.body.email,
+      "error",
+      "internal_server_error",
+      {
+        ip: getClientIp(req),
+        method: "totp",
+        error: err.message,
+      }
+    );
+
+    console.error("❌ TOTP Verification Error:", err);
+    res.status(500).json({
+      message: "Server error during verification",
+      error: err.message,
+    });
   }
 }
 
-  // Add to authController.js
-function getSecret(req, res) {
-  try {
-    const { email } = req.body;
-    const users = readUsers();
-    const user = users.users[email];
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+// Ultra-compact cache diagnostics endpoint
+async function getCacheDiagnostics(req, res) {
+  try {
+    const { action, iterations = 100 } = req.query;
+    
+    // Handle cache operation if specified
+    if (action) {
+      if (action === 'clear') cache.clear();
+      else if (action === 'refresh') cache.delete(CACHE_KEY);
     }
 
+    // Performance test (core metric)
+    const fileStart = Date.now();
+    for (let i = 0; i < iterations; i++) {
+      if (fs.existsSync(usersFilePath)) JSON.parse(fs.readFileSync(usersFilePath));
+    }
+    const fileTime = Date.now() - fileStart;
+    
+    const cacheStart = Date.now();
+    for (let i = 0; i < iterations; i++) cache.get(CACHE_KEY);
+    const cacheTime = Date.now() - cacheStart;
+
+    // Basic cache vs file comparison
+    const cached = cache.get(CACHE_KEY);
+    const fileData = fs.existsSync(usersFilePath) ? JSON.parse(fs.readFileSync(usersFilePath)) : { users: {} };
+
     res.json({
-      email: email,
-      secret: user.secret,
-      hasSecret: !!user.secret,
-      registeredAt: user.created_at
+      performance: {
+        fileTime: `${fileTime}ms`,
+        cacheTime: `${cacheTime}ms`,
+        speedup: `${((fileTime - cacheTime) / fileTime * 100).toFixed(0)}% faster`
+      },
+      data: {
+        cacheUsers: cached ? Object.keys(cached.users || {}).length : 0,
+        fileUsers: Object.keys(fileData.users || {}).length,
+        matches: JSON.stringify(cached) === JSON.stringify(fileData)
+      },
+      cache: {
+        size: cache.cache.size,
+        hasUsers: !!cached
+      },
+      ...(action && { action: `${action} completed` })
     });
 
-  } catch (err) {
-    res.status(500).json({ message: "Error retrieving secret", error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 }
 
-module.exports = { register, login, verifyTotp, debugTOTP, getSecret};
+
+module.exports = {
+  register,
+  login,
+  verifyTotp,
+  getCacheDiagnostics,
+};

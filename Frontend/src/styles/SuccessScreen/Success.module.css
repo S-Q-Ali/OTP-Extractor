@@ -1,0 +1,125 @@
+.authCard {
+  background: var(--white-10);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--white-20);
+  border-radius: var(--border-radius);
+  padding: 30px 55px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  display: none;
+  animation: slideIn 1s ease-out;
+}
+
+.authCard.active {
+  display: block;
+}
+
+.authCard:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.cardHeader h2 {
+  font-size: 20px;
+}
+
+.cardHeader h2 {
+  color: var(--white);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.cardHeader p {
+  color: var(--white-80);
+  font-size: 14px;
+}
+
+.securityIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--turquoise);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+  color: var(--white);
+  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.securityIcon.success {
+  background: var(--success-color);
+  box-shadow: 0 10px 20px rgba(46, 213, 115, 0.3);
+}
+
+.successContent {
+  text-align: center;
+}
+
+.welcomeMessage {
+  margin-bottom: 32px;
+}
+
+.welcomeMessage h3 {
+  color: var(--white);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.welcomeMessage p {
+  color: var(--white-80);
+  font-size: 14px;
+}
+
+.primaryBtn {
+  background: var(--turquoise);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.primaryBtn:hover {
+  background: var(--turquoise-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.primaryBtn:active {
+  transform: translateY(0);
+}
+
+.primaryBtn:disabled {
+  background: var(--white-20);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .authCard {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 320px) {
+  .authCard {
+    padding: 20px 15px;
+  }
+  
+  .cardHeader h2 {
+    font-size: 20px;
+  }
+}

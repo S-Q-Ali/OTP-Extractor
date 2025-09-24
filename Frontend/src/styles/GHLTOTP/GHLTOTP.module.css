@@ -1,0 +1,195 @@
+/* QRSetup.module.css */
+.authCard {
+  background: var(--white-10);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--white-20);
+  border-radius: var(--border-radius);
+  padding: 30px 55px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  display: none;
+  animation: slideIn 1s ease-out;
+}
+
+.authCard.active {
+  display: block;
+}
+
+.authCard:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.securityIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--turquoise);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+  color: var(--white);
+  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.cardHeader h2 {
+  color: var(--white);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.cardHeader p {
+  color: var(--white-80);
+  font-size: 14px;
+}
+
+.qrSection {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.qrContainer {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.qrPlaceholder {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+}
+
+.qrPlaceholder i {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.qrPlaceholder p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.qrContainer img {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+}
+
+.qrInstructions {
+  color: var(--white-80);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.primaryBtn {
+  background: var(--turquoise);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.primaryBtn:hover {
+  background: var(--turquoise-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.primaryBtn:active {
+  transform: translateY(0);
+}
+
+.primaryBtn:disabled {
+  background: var(--white-20);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.formFooter {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.termsNotice {
+  color: var(--white-80);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.termsNotice a {
+  color: var(--turquoise);
+  text-decoration: none;
+  margin: 0 4px;
+}
+
+.termsNotice a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .authCard {
+    padding: 30px 20px;
+  }
+  
+  .qrContainer {
+    padding: 15px;
+  }
+  
+  .qrContainer img,
+  .qrPlaceholder {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+@media (max-width: 320px) {
+  .authCard {
+    padding: 20px 15px;
+  }
+  
+  .cardHeader h2 {
+    font-size: 20px;
+  }
+  
+  .qrContainer img,
+  .qrPlaceholder {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .qrInstructions {
+    font-size: 13px;
+  }
+}

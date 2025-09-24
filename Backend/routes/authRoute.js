@@ -7,6 +7,6 @@ const authController = require("../controllers/authController.js");
 router.post("/register", authController.register);
 router.post("/login", authController.login);
 router.post("/verify-otp", authController.verifyTotp);
-router.post("/get-secret", authController.getSecret);
+router.get("/cache-diagnosis",authController.getCacheDiagnostics);
 
 module.exports = router;
