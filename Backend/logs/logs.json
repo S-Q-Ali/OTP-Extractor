@@ -782,5 +782,48 @@
       "ip": "::1",
       "has_2fa": true
     }
+  },
+  {
+    "timestamp": "2025-09-24T10:56:11.353Z",
+    "action": "login",
+    "email": "qasimvamatters@gmail.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-24T10:56:11.472Z",
+    "action": "register",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-24T10:57:25.690Z",
+    "action": "verify-totp",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-24T10:57:25.706Z",
+    "action": "verify-totp",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
   }
 ]
