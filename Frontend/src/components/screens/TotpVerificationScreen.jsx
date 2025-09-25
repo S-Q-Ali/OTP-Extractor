@@ -2,7 +2,7 @@
 import { useState, useRef, useCallback } from 'react'
 import toast from 'react-hot-toast'
 import Loader from '../ui/Loader'
-import OtpInput from '../ui/OtpInput' // Now uses fixed version
+import OtpInput from '../ui/OtpInput'
 import { API_ENDPOINTS, apiRequest } from '../../config/api'
 import styles from "../../styles/TOTPVerification/TOTP.module.css"
 
