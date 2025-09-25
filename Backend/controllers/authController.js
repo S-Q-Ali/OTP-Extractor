@@ -1,46 +1,14 @@
 // controllers/authController.js
-const fs = require("fs");
-const path = require("path");
 const bcrypt = require("bcrypt");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
 const logger = require("../utils/logger");
-const cache = require("../utils/userCache"); // Import the cache
-
-const usersFilePath = path.join(__dirname, "../user.json");
-const CACHE_KEY = "users_data";
-const CACHE_TTL = 180000; // 5 minutes
-
-// Helpers with cache support
-const readUsers = () => {
-  // Try to get from cache first
-  const cachedUsers = cache.get(CACHE_KEY);
-  if (cachedUsers) {
-    return cachedUsers;
-  }
-
-  // If not in cache, read from file and cache it
-  const fileUsers = fs.existsSync(usersFilePath)
-    ? JSON.parse(fs.readFileSync(usersFilePath))
-    : { users: {} };
-
-  cache.set(CACHE_KEY, fileUsers, CACHE_TTL);
-  return fileUsers;
-};
-
-const writeUsers = (users) => {
-  // Write to file
-  fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
-
-  // Update cache
-  cache.set(CACHE_KEY, users, CACHE_TTL);
-};
-
-// Helper to invalidate cache when needed
-const invalidateUsersCache = () => {
-  cache.delete(CACHE_KEY);
-};
-
+const {
+  readUsers,
+  writeUsers,
+  invalidateUsersCache,
+  getCacheDiagnostics,
+} = require("../utils/userHelpers");
 
 // Helper to get client IP
 const getClientIp = (req) => {
@@ -53,7 +21,7 @@ const getClientIp = (req) => {
   );
 };
 
-// REGISTER (updated with cache invalidation)
+// REGISTER
 async function register(req, res) {
   try {
     const { email, password, name } = req.body;
@@ -70,7 +38,7 @@ async function register(req, res) {
       await logger.logRegister(email, "failure", "user_already_exists", {
         ip: getClientIp(req),
       });
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "Invalid Password!" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -86,9 +54,8 @@ async function register(req, res) {
       is_verified: false,
     };
 
-    writeUsers(users); // This will update both file and cache
+    writeUsers(users);
 
-    // Log successful registration
     await logger.logRegister(email, "success", "new_user_created", {
       ip: getClientIp(req),
       has_2fa: true,
@@ -100,25 +67,21 @@ async function register(req, res) {
       email,
     });
   } catch (err) {
-    // Invalidate cache on error to ensure consistency
     invalidateUsersCache();
-
     await logger.logRegister(req.body.email, "error", "internal_server_error", {
       ip: getClientIp(req),
       error: err.message,
     });
 
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: err.message });
+    res.status(500).json({ message: "Internal server error", error: err.message });
   }
 }
 
-// LOGIN (benefits from cache)
+// LOGIN
 async function login(req, res) {
   try {
     const { email, password } = req.body;
-    const users = readUsers(); // This will use cache if available
+    const users = readUsers();
     const user = users.users[email];
 
     if (!user) {
@@ -136,7 +99,6 @@ async function login(req, res) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Log successful password validation
     await logger.logLogin(email, "success", "password_valid", {
       ip: getClientIp(req),
       requires_otp: true,
@@ -149,17 +111,15 @@ async function login(req, res) {
       error: err.message,
     });
 
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: err.message });
+    res.status(500).json({ message: "Internal server error", error: err.message });
   }
 }
 
-// VERIFY TOTP (updated with cache)
+// VERIFY TOTP
 async function verifyTotp(req, res) {
   try {
     const { email, token } = req.body;
-    const users = readUsers(); // Uses cache
+    const users = readUsers();
     const user = users.users[email];
 
     if (!user) {
@@ -170,13 +130,6 @@ async function verifyTotp(req, res) {
       return res.status(401).json({ message: "Invalid user" });
     }
 
-    console.log("TOTP Verification Attempt:", {
-      email: email,
-      token: token,
-      secret: user.secret,
-      time: new Date().toISOString(),
-    });
-
     const isValid = speakeasy.totp.verify({
       secret: user.secret,
       encoding: "base32",
@@ -185,8 +138,6 @@ async function verifyTotp(req, res) {
       step: 30,
     });
 
-    console.log("TOTP Verification Result:", isValid);
-
     if (!isValid) {
       await logger.logVerifyTotp(email, "failure", "invalid_or_expired_totp", {
         ip: getClientIp(req),
@@ -194,13 +145,6 @@ async function verifyTotp(req, res) {
         provided_token: token,
       });
 
-      const currentToken = speakeasy.totp({
-        secret: user.secret,
-        encoding: "base32",
-        step: 30,
-      });
-
-      console.log("Server expected token around this time:", currentToken);
       return res.status(401).json({
         message:
           "Invalid or expired TOTP. Please make sure your device time is synchronized.",
@@ -208,36 +152,28 @@ async function verifyTotp(req, res) {
     }
 
     user.is_verified = true;
-    writeUsers(users); // Updates both file and cache
+    writeUsers(users);
 
     await logger.logVerifyTotp(email, "success", "otp_verified", {
       ip: getClientIp(req),
       method: "totp",
     });
 
-    console.log("✅ TOTP Verification Successful for:", email);
     res.json({
       message: "Login successful ✅",
       user: {
-        email: user.email,
+        email,
         name: user.name,
       },
     });
   } catch (err) {
-    invalidateUsersCache(); // Invalidate cache on error
+    invalidateUsersCache();
+    await logger.logVerifyTotp(req.body.email, "error", "internal_server_error", {
+      ip: getClientIp(req),
+      method: "totp",
+      error: err.message,
+    });
 
-    await logger.logVerifyTotp(
-      req.body.email,
-      "error",
-      "internal_server_error",
-      {
-        ip: getClientIp(req),
-        method: "totp",
-        error: err.message,
-      }
-    );
-
-    console.error("❌ TOTP Verification Error:", err);
     res.status(500).json({
       message: "Server error during verification",
       error: err.message,
@@ -245,60 +181,20 @@ async function verifyTotp(req, res) {
   }
 }
 
-
-// Ultra-compact cache diagnostics endpoint
-async function getCacheDiagnostics(req, res) {
+// CACHE DIAGNOSTICS (thin wrapper)
+async function cacheDiagnostics(req, res) {
   try {
     const { action, iterations = 100 } = req.query;
-    
-    // Handle cache operation if specified
-    if (action) {
-      if (action === 'clear') cache.clear();
-      else if (action === 'refresh') cache.delete(CACHE_KEY);
-    }
-
-    // Performance test (core metric)
-    const fileStart = Date.now();
-    for (let i = 0; i < iterations; i++) {
-      if (fs.existsSync(usersFilePath)) JSON.parse(fs.readFileSync(usersFilePath));
-    }
-    const fileTime = Date.now() - fileStart;
-    
-    const cacheStart = Date.now();
-    for (let i = 0; i < iterations; i++) cache.get(CACHE_KEY);
-    const cacheTime = Date.now() - cacheStart;
-
-    // Basic cache vs file comparison
-    const cached = cache.get(CACHE_KEY);
-    const fileData = fs.existsSync(usersFilePath) ? JSON.parse(fs.readFileSync(usersFilePath)) : { users: {} };
-
-    res.json({
-      performance: {
-        fileTime: `${fileTime}ms`,
-        cacheTime: `${cacheTime}ms`,
-        speedup: `${((fileTime - cacheTime) / fileTime * 100).toFixed(0)}% faster`
-      },
-      data: {
-        cacheUsers: cached ? Object.keys(cached.users || {}).length : 0,
-        fileUsers: Object.keys(fileData.users || {}).length,
-        matches: JSON.stringify(cached) === JSON.stringify(fileData)
-      },
-      cache: {
-        size: cache.cache.size,
-        hasUsers: !!cached
-      },
-      ...(action && { action: `${action} completed` })
-    });
-
+    const result = getCacheDiagnostics(iterations, action);
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
 
-
 module.exports = {
   register,
   login,
   verifyTotp,
-  getCacheDiagnostics,
+  cacheDiagnostics,
 };

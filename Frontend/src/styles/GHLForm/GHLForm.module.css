@@ -217,24 +217,13 @@
 }
 
 
-.otpDisplay {
-  margin-top: 14px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 20px;            
-  font-weight: 700;           
-  color: var(--turquoise);
-  letter-spacing: 2px;       
-}
-
-/* Copy button */
+Copy button
 .copyBtn {
   background: var(--white-20);
   border: none;
   border-radius: 8px;
-  padding: 8px 14px;          /* bigger click area */
-  font-size: 14px;            /* slightly larger text */
+  padding: 8px 14px;          
+  font-size: 14px;            
   font-weight: 500;
   color: var(--white);
   cursor: pointer;
@@ -244,7 +233,60 @@
   transition: var(--transition);
 }
 
+.otpSection {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--white-10);
+  border-radius: 8px;
+  border: 1px solid var(--white-20);
+}
+
+.otpDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--turquoise);
+  letter-spacing: 2px;
+}
+
+.refreshBtn {
+  background: var(--white-20);
+  border: 1px solid var(--white-20);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+  width: 100%;
+  justify-content: center;
+}
+
+.refreshBtn:hover {
+  background: var(--turquoise);
+  border-color: var(--turquoise);
+}
+
+.copyBtn {
+  background: var(--white-20);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: var(--transition);
+}
+
 .copyBtn:hover {
   background: var(--turquoise);
-  color: var(--white);
 }

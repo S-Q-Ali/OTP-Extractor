@@ -1,154 +1,152 @@
-// src/components/AppRouter.jsx
-import { useState } from 'react'
-import toast from 'react-hot-toast'
-import LoginScreen from '../screens/LoginScreen'
-import QrSetupScreen from '../screens/QrSetupScreen'
-import TotpVerificationScreen from '../screens/TotpVerificationScreen'
-import ForgotPasswordScreen from "../screens/ForgotPasswordScreen"
-import GhlEmailScreen from '../screens/GhlEmailScreen'
-import { API_ENDPOINTS, apiRequest } from '../../config/api'
+import { useState } from "react";
+import toast from "react-hot-toast";
+import LoginScreen from "../screens/LoginScreen";
+import QrSetupScreen from "../screens/QrSetupScreen";
+import TotpVerificationScreen from "../screens/TotpVerificationScreen";
+import GhlEmailScreen from "../screens/GhlEmailScreen";
+import { API_ENDPOINTS, apiRequest } from "../../config/api";
 
 const AppRouter = () => {
-  const [currentScreen, setCurrentScreen] = useState('login')
-  const [userData, setUserData] = useState(null)
-  const [currentEmail, setCurrentEmail] = useState('')
-  const [qrCodeData, setQrCodeData] = useState('')
+  const [currentScreen, setCurrentScreen] = useState("login");
+  const [userData, setUserData] = useState(null);
+  const [currentEmail, setCurrentEmail] = useState("");
+  const [qrCodeData, setQrCodeData] = useState("");
 
-  const showScreen = (screenName) => setCurrentScreen(screenName)
+  const showScreen = (screenName) => setCurrentScreen(screenName);
 
   const handleLogin = async (email, password) => {
-    setCurrentEmail(email)
-    setUserData({ email, password })
-    showScreen('totpVerification')
-  }
+    setCurrentEmail(email);
+    setUserData({ email, password });
+    showScreen("totpVerification");
+  };
 
   const handleShowTOTP = (email) => {
-    setCurrentEmail(email)
-    showScreen('totpVerification')
-  }
+    setCurrentEmail(email);
+    showScreen("totpVerification");
+  };
 
   const handleShowQR = (email, qrCode) => {
-    setCurrentEmail(email)
-    setQrCodeData(qrCode)
-    showScreen('qrSetup')
-  }
+    setCurrentEmail(email);
+    setQrCodeData(qrCode);
+    showScreen("qrSetup");
+  };
 
   const handleTOTPVerification = async (code) => {
     try {
-      toast.loading('Verifying TOTP code...')
-      
-      const response = await apiRequest(API_ENDPOINTS.VERIFY_OTP, {
-        method: 'POST',
+      toast.loading("Verifying TOTP code...");
+
+      await apiRequest(API_ENDPOINTS.VERIFY_OTP, {
+        method: "POST",
         body: JSON.stringify({
           email: currentEmail,
-          token: code
-        })
-      })
+          token: code,
+        }),
+      });
 
-      toast.dismiss()
-      toast.success('TOTP verified successfully!')
-      showScreen('ghlEmail')
-      
+      toast.dismiss();
+      toast.success("TOTP verified successfully!");
+      showScreen("ghlEmail");
     } catch (error) {
-      toast.dismiss()
-      toast.error(error.message || 'TOTP verification failed')
+      toast.dismiss();
+      toast.error(error.message || "TOTP verification failed");
     }
-  }
+  };
 
+  // Updated: Fetch OTP from backend instead of Google Apps Script
   const handleGHLRequest = async (ghlEmail) => {
-    toast.loading('Generating OTP...')
-    
-    setTimeout(() => {
-      const otp = Math.floor(100000 + Math.random() * 900000).toString()
-      setUserData(prev => ({ ...prev, ghlEmail, generatedOtp: otp }))
-      toast.dismiss()
-      toast.success(`Your latest OTP is: ${otp}`)
-    }, 1000)
-  }
+    toast.loading("Fetching OTP from your email...");
+
+    try {
+      const response = await apiRequest(API_ENDPOINTS.GHL_OTP, {
+        method: "POST",
+        body: JSON.stringify({ email: ghlEmail }),
+      });
+
+      toast.dismiss();
+      if (response.success && response.otp) {
+        setUserData((prev) => ({
+          ...prev,
+          ghlEmail,
+          generatedOtp: response.otp,
+        }));
+        toast.success(`OTP fetched successfully: ${response.otp}`);
+      } else {
+        toast.error(response.message || "No OTP found in your email");
+      }
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Failed to fetch OTP from backend");
+      console.error("Error fetching OTP:", error);
+    }
+  };
 
   const copyOTP = () => {
-    const otpCode = userData?.generatedOtp || ''
-    if (!otpCode) return
+    const otpCode = userData?.generatedOtp || "";
+    if (!otpCode) return;
 
-    navigator.clipboard.writeText(otpCode).then(() => {
-      toast.success('OTP copied to clipboard!')
-    }).catch(() => {
-      const textArea = document.createElement('textarea')
-      textArea.value = otpCode
-      document.body.appendChild(textArea)
-      textArea.select()
-      document.execCommand('copy')
-      document.body.removeChild(textArea)
-      toast.success('OTP copied to clipboard!')
-    })
-  }
-
-  const generateNewOTP = () => {
-    toast.loading('Generating new OTP...')
-    setTimeout(() => {
-      const newOtp = Math.floor(100000 + Math.random() * 900000).toString()
-      setUserData(prev => ({ ...prev, generatedOtp: newOtp }))
-      toast.dismiss()
-      toast.success(`New OTP generated: ${newOtp}`)
-    }, 500)
-  }
-
-  const restartFlow = () => {
-    setUserData(null)
-    setCurrentEmail('')
-    setQrCodeData('')
-    showScreen('login')
-    toast.info('Session reset. Please log in again.')
-  }
+    navigator.clipboard
+      .writeText(otpCode)
+      .then(() => {
+        toast.success("OTP copied to clipboard!");
+      })
+      .catch(() => {
+        const textArea = document.createElement("textarea");
+        textArea.value = otpCode;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        toast.success("OTP copied to clipboard!");
+      });
+  };
 
   const renderScreen = () => {
     switch (currentScreen) {
-      case 'login':
+      case "login":
         return (
-          <LoginScreen 
+          <LoginScreen
             onLogin={handleLogin}
             onShowTOTP={handleShowTOTP}
             onShowQR={handleShowQR}
           />
-        )
-        case 'forgotpassword':
-          <ForgotPasswordScreen />
-      case 'qrSetup':
+        );
+      case "qrSetup":
         return (
-          <QrSetupScreen 
-            userEmail={currentEmail} 
+          <QrSetupScreen
+            userEmail={currentEmail}
             qrCodeData={qrCodeData}
-            onContinue={() => showScreen('totpVerification')}
+            onContinue={() => showScreen("totpVerification")}
           />
-        )
-      case 'totpVerification':
+        );
+      case "totpVerification":
         return (
-          <TotpVerificationScreen 
+          <TotpVerificationScreen
             userEmail={currentEmail}
             onVerify={handleTOTPVerification}
-            onBack={() => showScreen('login')}
+            onBack={() => showScreen("login")}
           />
-        )
-      case 'ghlEmail':
+        );
+      case "ghlEmail":
         return (
-          <GhlEmailScreen 
+          <GhlEmailScreen
             onRequestOTP={handleGHLRequest}
             otp={userData?.generatedOtp}
             onCopyOTP={copyOTP}
+            // onRefreshOTP={generateNewOTP}
           />
-        )
+        );
       default:
         return (
-          <LoginScreen 
+          <LoginScreen
             onLogin={handleLogin}
             onShowTOTP={handleShowTOTP}
             onShowQR={handleShowQR}
           />
-        )
+        );
     }
-  }
+  };
 
-  return renderScreen()
-}
+  return renderScreen();
+};
 
-export default AppRouter
+export default AppRouter;
