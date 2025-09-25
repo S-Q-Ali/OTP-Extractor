@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
   REGISTER: `${API_BASE_URL}/auth/register`,
   LOGIN: `${API_BASE_URL}/auth/login`,
   VERIFY_OTP: `${API_BASE_URL}/auth/verify-otp`,
+  GHL_OTP:`${API_BASE_URL}/ghl/get-ghl-otp`
 };
 
 export const apiRequest = async (url, options = {}) => {
