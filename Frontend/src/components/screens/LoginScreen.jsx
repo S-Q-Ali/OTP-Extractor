@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Loader from "../ui/Loader";
 import { API_ENDPOINTS, apiRequest } from "../../config/api";
-import styles from "../../styles/LoginForm/Login.module.css"; // Correct import
+import styles from "../../styles/LoginForm/Login.module.css"; 
 
 const LoginScreen = ({ onLogin, onShowTOTP, onShowQR }) => {
   const [isLoading, setIsLoading] = useState(false);
