@@ -1,4 +1,3 @@
-// controllers/authController.js
 const bcrypt = require("bcrypt");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
@@ -73,7 +72,9 @@ async function register(req, res) {
       error: err.message,
     });
 
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }
 
@@ -111,7 +112,9 @@ async function login(req, res) {
       error: err.message,
     });
 
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }
 
@@ -168,11 +171,16 @@ async function verifyTotp(req, res) {
     });
   } catch (err) {
     invalidateUsersCache();
-    await logger.logVerifyTotp(req.body.email, "error", "internal_server_error", {
-      ip: getClientIp(req),
-      method: "totp",
-      error: err.message,
-    });
+    await logger.logVerifyTotp(
+      req.body.email,
+      "error",
+      "internal_server_error",
+      {
+        ip: getClientIp(req),
+        method: "totp",
+        error: err.message,
+      }
+    );
 
     res.status(500).json({
       message: "Server error during verification",
