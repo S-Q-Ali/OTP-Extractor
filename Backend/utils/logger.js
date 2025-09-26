@@ -4,6 +4,7 @@ const path = require("path");
 
 const logsDir = path.join(__dirname, "../logs");
 const logFile = path.join(logsDir, "logs.json");
+const LOG_RETENTION_DAYS = 30;
 
 // ✅ Ensure logs directory exists
 function ensureLogsDirectory() {
