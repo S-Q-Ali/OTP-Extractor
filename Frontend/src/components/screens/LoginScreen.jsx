@@ -26,6 +26,8 @@ const LoginScreen = ({ onLogin, onShowTOTP, onShowQR }) => {
   };
 
   const onSubmit = async ({ email, password }) => {
+    if (!email || !password) return;
+
     setIsLoading(true);
 
     try {
