@@ -21,20 +21,20 @@
   transform: translateY(-2px);
 }
 
-.cardHeader {
+.cardHeader-second {
   text-align: center;
   margin-bottom: 32px;
   position: relative;
 }
 
-.cardHeader h2 {
+.cardHeader-second h2 {
   color: var(--white);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 8px;
 }
 
-.cardHeader p {
+.cardHeader-second p {
   color: var(--white-80);
   font-size: 14px;
 }
