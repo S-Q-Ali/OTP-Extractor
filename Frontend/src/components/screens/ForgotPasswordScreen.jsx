@@ -1,52 +1,29 @@
-// src/components/screens/ForgotPasswordScreen.jsx
-import { useState } from 'react'
-import Loader from '../ui/Loader'
-import styles from "../../styles/ForgotPassword/Forgot.module.css"
+import { useState } from "react";
+import Loader from "../ui/Loader";
+import styles from "../../styles/ForgotPassword/Forgot.module.css";
+import Button from "../ui/Button";
+import { FormProvider, useForm } from "react-hook-form";
+import FormInputField from "../ui/FormInputField";
 
 const ForgotPasswordScreen = ({ onRequestCode, onBack, showToast }) => {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  const methods = useForm();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!email.trim()) {
-      setError('Please enter your email address')
-      showToast('Please enter your email address', 'error')
-      return
-    }
-
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address')
-      showToast('Please enter a valid email address', 'error')
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      await onRequestCode(email)
-    } catch (error) {
-      showToast('Failed to send reset code. Please try again.', 'error')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleInputChange = (e) => {
-    setEmail(e.target.value)
-    if (error) setError('')
-  }
+  const onSubmit = (data) => {
+    console.log("data in handleSubmit", data);
+  };
 
   return (
-    <div id="forgot-password-screen" className={`${styles.authCard}${styles.active}`}>
+    <div
+      id="forgot-password-screen"
+      className={`${styles.authCard}${styles.active}`}
+    >
       <div className={styles.cardHeader}>
-        <button className={styles.backBtn} onClick={onBack}>
+        <Button className={styles.backBtn} onClick={onBack}>
           <i className="fas fa-arrow-left"></i>
           Back to Login
-        </button>
+        </Button>
 
         <div className={styles.securityIcon}>
           <i className="fas fa-key"></i>
@@ -56,32 +33,39 @@ const ForgotPasswordScreen = ({ onRequestCode, onBack, showToast }) => {
       </div>
 
       <Loader isLoading={isLoading}>
-        <form className= {styles.authForm} onSubmit={handleSubmit}>
-          <div className= {styles.formGroup}>
-            <label htmlFor="forgot-email">Email Address</label>
-            <div className={styles.inputField}>
-              <i className="fas fa-envelope"></i>
-              <input
-                type="email"
-                id="forgot-email"
-                value={email}
-                onChange={handleInputChange}
-                placeholder="Enter your registered email"
-                required
-                className={error ? styles.error : ''}
-              />
-            </div>
-            {error && <div className={`${styles.errorMessage}${styles.show}`}>{error}</div>}
-          </div>
+        <FormProvider {...methods}>
+          <form
+            className={styles.authForm}
+            onSubmit={methods.handleSubmit(onSubmit)}
+          >
+            <FormInputField
+              label={"Email Address"}
+              type="email"
+              id={"forgot-email"}
+              name={"email"}
+              placeholder={"Enter your registered email"}
+              rules={{
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9+._-]+(@gmail\.com)?$/,
+                  message: "Invalid Gmail address",
+                },
+              }}
+            />
 
-          <button type="submit" className={styles.primaryBtn} disabled={isLoading}>
-            <i className="fas fa-paper-plane"></i>
-            Send Reset Code
-          </button>
-        </form>
+            <Button
+              type="submit"
+              className={styles.primaryBtn}
+              disabled={isLoading}
+            >
+              <i className="fas fa-paper-plane"></i>
+              Send Reset Code
+            </Button>
+          </form>
+        </FormProvider>
       </Loader>
     </div>
-  )
-}
+  );
+};
 
-export default ForgotPasswordScreen
+export default ForgotPasswordScreen;
