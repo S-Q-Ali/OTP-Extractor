@@ -1,27 +1,22 @@
-// src/components/screens/GhlEmailScreen.jsx
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Loader from "../ui/Loader";
 import styles from "../../styles/GHLForm/GHLForm.module.css";
+import Button from "../ui/Button";
+import FormInputField from "../ui/FormInputField";
 
-const GhlEmailScreen = ({ onRequestOTP, otp, onCopyOTP, onRefreshOTP }) => {
+const GhlEmailScreen = ({ onRequestOTP, otp, onCopyOTP }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const methods = useForm();
 
   const onSubmit = async (data) => {
     setIsLoading(true);
 
     try {
-      const fullEmail = `${data.email}@gmail.com`;
       await onRequestOTP(data.email);
-      reset();
+      methods.reset();
     } catch (error) {
       toast.error(error.message || "Failed to fetch OTP");
     } finally {
@@ -43,66 +38,62 @@ const GhlEmailScreen = ({ onRequestOTP, otp, onCopyOTP, onRefreshOTP }) => {
       </div>
 
       <Loader isLoading={isLoading}>
-        <form className={styles.authForm} onSubmit={handleSubmit(onSubmit)}>
-          <div className={styles.formGroup}>
-            <label htmlFor="ghl-email">GHL Email Address</label>
-            <div className={styles.inputField}>
-              <i className="fas fa-envelope"></i>
-              <input
-                type="text"
-                id="ghl-email"
-                {...register("email", {
-                  required: "Email is required",
-                  validate: {
-                    validPrefix: (value) =>
-                      /^[a-zA-Z0-9+._-]+$/.test(value) ||
-                      "Enter Without @gmail.com",
-                  },
-                })}
-                placeholder="Enter GHL email (without @gmail.com)"
-                className={errors.email ? styles.error : ""}
-              />
-            </div>
-            {errors.email && (
-              <div className={`${styles.errorMessage} ${styles.show}`}>
-                {errors.email.message}
-              </div>
-            )}
+        <FormProvider {...methods}>
+          <form
+            className={styles.authForm}
+            onSubmit={methods.handleSubmit(onSubmit)}
+          >
+            <FormInputField
+              name={"email"}
+              label={"Email Address"}
+              icon={"fas fa-envelope"}
+              type="email"
+              id={"ghl-email"}
+              placeholder="Enter GHL email (without @gmail.com)"
+              rules={{
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9+._-]+(@gmail\.com)?$/,
+                  message: "Invalid Gmail address",
+                },
+              }}
+            />
 
-            {/* OTP Display Section */}
             {otp && (
               <div className={styles.otpSection}>
                 <div className={styles.otpDisplay}>
                   <span>
                     Your OTP: <strong>{otp}</strong>
                   </span>
-                  <button
-                    type="button"
+
+                  <Button
+                    type={"button"}
                     className={styles.copyBtn}
                     onClick={onCopyOTP}
                   >
                     <i className="fas fa-copy"></i> Copy
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
-          </div>
 
-          <button
-            type="submit"
-            className={styles.primaryBtn}
-            disabled={isLoading}
-          >
-            <i className="fas fa-key"></i>
-            {otp ? "Fetch New OTP" : "Get OTP from Email"}
-          </button>
+            <Button
+              type="submit"
+              onClick={methods.handleSubmit(onSubmit)}
+              className={styles.primaryBtn}
+              disabled={isLoading}
+            >
+              <i className="fas fa-key"></i>
+              {otp ? "Fetch New OTP" : "Get OTP from Email"}
+            </Button>
 
-          <div className={styles.formFooter}>
-            <div className={styles.termsNotice}>
-              This will search your Gmail for the latest OTP email
+            <div className={styles.formFooter}>
+              <div className={styles.termsNotice}>
+                This will search your Gmail for the latest OTP email
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </FormProvider>
       </Loader>
     </div>
   );
