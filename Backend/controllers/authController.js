@@ -8,17 +8,7 @@ const {
   invalidateUsersCache,
   getCacheDiagnostics,
 } = require("../utils/userHelpers");
-
-// Helper to get client IP
-const getClientIp = (req) => {
-  return (
-    req.clientIp ||
-    req.headers["x-forwarded-for"] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    (req.connection.socket ? req.connection.socket.remoteAddress : "unknown")
-  );
-};
+const { getClientIp } = require("../utils/helpers");
 
 // REGISTER
 async function register(req, res) {
@@ -26,7 +16,7 @@ async function register(req, res) {
     const { email, password, name } = req.body;
 
     if (!email || !password) {
-      await logger.logRegister(email, "failure", "missing_credentials", {
+      logger.logRegister(email, "failure", "missing_credentials", {
         ip: getClientIp(req),
       });
       return res.status(400).json({ message: "Email and password required" });
@@ -34,7 +24,7 @@ async function register(req, res) {
 
     const users = readUsers();
     if (users.users[email]) {
-      await logger.logRegister(email, "failure", "user_already_exists", {
+      logger.logRegister(email, "failure", "user_already_exists", {
         ip: getClientIp(req),
       });
       return res.status(400).json({ message: "Invalid Password!" });
@@ -55,7 +45,7 @@ async function register(req, res) {
 
     writeUsers(users);
 
-    await logger.logRegister(email, "success", "new_user_created", {
+    logger.logRegister(email, "success", "new_user_created", {
       ip: getClientIp(req),
       has_2fa: true,
     });
@@ -67,7 +57,7 @@ async function register(req, res) {
     });
   } catch (err) {
     invalidateUsersCache();
-    await logger.logRegister(req.body.email, "error", "internal_server_error", {
+    logger.logRegister(req.body.email, "error", "internal_server_error", {
       ip: getClientIp(req),
       error: err.message,
     });
