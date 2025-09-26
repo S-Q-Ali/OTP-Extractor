@@ -68,7 +68,7 @@ const TotpVerificationScreen = ({ userEmail, onVerify, onBack }) => {
         <div className={styles.authForm}>
           <OtpInput onComplete={handleSubmit} ref={otpInputRef} length={6} />
 
-          <div className={styles.formFooter}>
+          {/* <div className={styles.formFooter}>
             <p>
               Didn't receive code?
               <a
@@ -81,7 +81,7 @@ const TotpVerificationScreen = ({ userEmail, onVerify, onBack }) => {
                 Resend
               </a>
             </p>
-          </div>
+          </div> */}
         </div>
       </Loader>
     </div>
