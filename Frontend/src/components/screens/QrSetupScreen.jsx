@@ -1,7 +1,7 @@
-// src/components/screens/QrSetupScreen.jsx
-import styles from "../../styles/QrCode/QrCode.module.css" // Add CSS module import
+import styles from "../../styles/QrCode/QrCode.module.css";
+import Button from "../ui/Button";
 
-const QrSetupScreen = ({ userEmail, qrCodeData, onContinue, showToast }) => {
+const QrSetupScreen = ({ qrCodeData, onContinue }) => {
   return (
     <div id="qr-setup-screen" className={`${styles.authCard} ${styles.active}`}>
       <div className={styles.cardHeader}>
@@ -24,14 +24,15 @@ const QrSetupScreen = ({ userEmail, qrCodeData, onContinue, showToast }) => {
           )}
         </div>
         <p className={styles.qrInstructions}>
-          Scan this QR code with Google Authenticator or Microsoft Authenticator app
+          Scan this QR code with Google Authenticator or Microsoft Authenticator
+          app
         </p>
       </div>
 
-      <button onClick={onContinue} className={styles.primaryBtn}>
+      <Button onClick={onContinue} className={styles.primaryBtn}>
         <i className="fas fa-arrow-right"></i>
         Continue to Verification
-      </button>
+      </Button>
 
       <div className={styles.formFooter}>
         <div className={styles.termsNotice}>
@@ -40,7 +41,7 @@ const QrSetupScreen = ({ userEmail, qrCodeData, onContinue, showToast }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default QrSetupScreen
+export default QrSetupScreen;
