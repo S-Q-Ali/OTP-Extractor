@@ -1,0 +1,74 @@
+.authCard {
+  background: var(--white-10);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--white-20);
+  border-radius: var(--border-radius);
+  padding: 30px 55px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  display: none;
+  animation: slideIn 1s ease-out;
+}
+
+.authCard.active {
+  display: block;
+}
+
+.authCard:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.securityIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--turquoise);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+  color: var(--white);
+  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.cardHeader h2 {
+  color: var(--white);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.cardHeader p {
+  color: var(--white-80);
+  font-size: 14px;
+}
+
+.backBtn {
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  background: var(--white-20);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--white);
+  cursor: pointer;
+  font-size: 14px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.backBtn:hover {
+  background: var(--white-20);
+  transform: translateX(-2px);
+}
