@@ -23,6 +23,8 @@ async function register(req, res) {
     }
 
     const users = readUsers();
+
+    // ISSUE HERE KINDLY CHECK, HERE WE CHECK USER BASE ON EMAIL IF
     if (users.users[email]) {
       logger.logRegister(email, "failure", "user_already_exists", {
         ip: getClientIp(req),
