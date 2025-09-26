@@ -2346,5 +2346,79 @@
       "ip": "::1",
       "method": "totp"
     }
+  },
+  {
+    "timestamp": "2025-09-25T17:15:52.389Z",
+    "action": "login",
+    "email": "qasimvamatters@gmail.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-25T17:15:52.514Z",
+    "action": "register",
+    "email": "qasimvamatters@gmail.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-25T17:15:58.277Z",
+    "action": "verify-totp",
+    "email": "qasimvamatters@gmail.com",
+    "status": "failure",
+    "reason": "invalid_or_expired_totp",
+    "meta": {
+      "ip": "::1",
+      "method": "totp",
+      "provided_token": "111111"
+    }
+  },
+  {
+    "timestamp": "2025-09-25T17:27:06.398Z",
+    "action": "login",
+    "email": "qasimvamatters@gmail.com",
+    "status": "failure",
+    "reason": "invalid_password",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-25T17:27:06.409Z",
+    "action": "register",
+    "email": "qasimvamatters@gmail.com",
+    "status": "failure",
+    "reason": "user_already_exists",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-26T15:08:55.686Z",
+    "action": "login",
+    "email": "test1@gmail.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-26T15:08:55.802Z",
+    "action": "register",
+    "email": "test1@gmail.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
   }
 ]
