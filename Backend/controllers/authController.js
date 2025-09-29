@@ -74,6 +74,12 @@ async function register(req, res) {
 async function login(req, res) {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(401)
+        .json({ message: "Email and Paswword are required fields" });
+    }
     const users = readUsers();
     const user = users.users[email];
 
@@ -85,6 +91,7 @@ async function login(req, res) {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
       await logger.logLogin(email, "failure", "invalid_password", {
         ip: getClientIp(req),
@@ -97,7 +104,11 @@ async function login(req, res) {
       requires_otp: true,
     });
 
-    res.json({ message: "Password valid, enter OTP", requiresOtp: true });
+    res.json({
+      message: "Password valid, enter OTP",
+      requiresOtp: user.is_verified,
+      qrCode: user.qrCode,
+    });
   } catch (err) {
     await logger.logLogin(req.body.email, "error", "internal_server_error", {
       ip: getClientIp(req),
