@@ -1,4 +1,3 @@
-// controllers/authController.js
 const bcrypt = require("bcrypt");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
@@ -9,17 +8,7 @@ const {
   invalidateUsersCache,
   getCacheDiagnostics,
 } = require("../utils/userHelpers");
-
-// Helper to get client IP
-const getClientIp = (req) => {
-  return (
-    req.clientIp ||
-    req.headers["x-forwarded-for"] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    (req.connection.socket ? req.connection.socket.remoteAddress : "unknown")
-  );
-};
+const { getClientIp } = require("../utils/helpers");
 
 // REGISTER
 async function register(req, res) {
@@ -27,15 +16,17 @@ async function register(req, res) {
     const { email, password, name } = req.body;
 
     if (!email || !password) {
-      await logger.logRegister(email, "failure", "missing_credentials", {
+      logger.logRegister(email, "failure", "missing_credentials", {
         ip: getClientIp(req),
       });
       return res.status(400).json({ message: "Email and password required" });
     }
 
     const users = readUsers();
+
+    // ISSUE HERE KINDLY CHECK, HERE WE CHECK USER BASE ON EMAIL IF
     if (users.users[email]) {
-      await logger.logRegister(email, "failure", "user_already_exists", {
+      logger.logRegister(email, "failure", "user_already_exists", {
         ip: getClientIp(req),
       });
       return res.status(400).json({ message: "Invalid Password!" });
@@ -56,7 +47,7 @@ async function register(req, res) {
 
     writeUsers(users);
 
-    await logger.logRegister(email, "success", "new_user_created", {
+    logger.logRegister(email, "success", "new_user_created", {
       ip: getClientIp(req),
       has_2fa: true,
     });
@@ -68,12 +59,14 @@ async function register(req, res) {
     });
   } catch (err) {
     invalidateUsersCache();
-    await logger.logRegister(req.body.email, "error", "internal_server_error", {
+    logger.logRegister(req.body.email, "error", "internal_server_error", {
       ip: getClientIp(req),
       error: err.message,
     });
 
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }
 
@@ -81,6 +74,12 @@ async function register(req, res) {
 async function login(req, res) {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(401)
+        .json({ message: "Email and Paswword are required fields" });
+    }
     const users = readUsers();
     const user = users.users[email];
 
@@ -92,6 +91,7 @@ async function login(req, res) {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
       await logger.logLogin(email, "failure", "invalid_password", {
         ip: getClientIp(req),
@@ -104,14 +104,20 @@ async function login(req, res) {
       requires_otp: true,
     });
 
-    res.json({ message: "Password valid, enter OTP", requiresOtp: true });
+    res.json({
+      message: "Password valid, enter OTP",
+      requiresOtp: user.is_verified,
+      qrCode: user.qrCode,
+    });
   } catch (err) {
     await logger.logLogin(req.body.email, "error", "internal_server_error", {
       ip: getClientIp(req),
       error: err.message,
     });
 
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 }
 
@@ -168,11 +174,16 @@ async function verifyTotp(req, res) {
     });
   } catch (err) {
     invalidateUsersCache();
-    await logger.logVerifyTotp(req.body.email, "error", "internal_server_error", {
-      ip: getClientIp(req),
-      method: "totp",
-      error: err.message,
-    });
+    await logger.logVerifyTotp(
+      req.body.email,
+      "error",
+      "internal_server_error",
+      {
+        ip: getClientIp(req),
+        method: "totp",
+        error: err.message,
+      }
+    );
 
     res.status(500).json({
       message: "Server error during verification",

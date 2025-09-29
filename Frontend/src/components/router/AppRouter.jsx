@@ -11,18 +11,22 @@ const AppRouter = () => {
   const [userData, setUserData] = useState(null);
   const [currentEmail, setCurrentEmail] = useState("");
   const [qrCodeData, setQrCodeData] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
 
   const showScreen = (screenName) => setCurrentScreen(screenName);
 
-  const handleLogin = async (email, password) => {
+  const handleLogin = async (email, password, requiresOtp) => {
+    if (!email) return;
     setCurrentEmail(email);
     setUserData({ email, password });
-    showScreen("totpVerification");
+    setIsVerified(requiresOtp);
+    showScreen("qrSetup");
   };
 
-  const handleShowTOTP = (email) => {
+  const handleShowTOTP = (email, requiresOtp) => {
     setCurrentEmail(email);
-    showScreen("totpVerification");
+    setIsVerified(requiresOtp);
+    showScreen("qrSetup");
   };
 
   const handleShowQR = (email, qrCode) => {
@@ -116,6 +120,12 @@ const AppRouter = () => {
             userEmail={currentEmail}
             qrCodeData={qrCodeData}
             onContinue={() => showScreen("totpVerification")}
+            onVerify={handleTOTPVerification}
+            isVerified={isVerified}
+            onBack={() => {
+              showScreen("login");
+              setQrCodeData("");
+            }}
           />
         );
       case "totpVerification":

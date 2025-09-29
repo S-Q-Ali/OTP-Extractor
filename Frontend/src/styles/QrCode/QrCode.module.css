@@ -20,38 +20,6 @@
   transform: translateY(-2px);
 }
 
-.cardHeader {
-  text-align: center;
-  margin-bottom: 32px;
-  position: relative;
-}
-
-.securityIcon {
-  width: 60px;
-  height: 60px;
-  background: var(--turquoise);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 20px;
-  font-size: 24px;
-  color: var(--white);
-  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
-}
-
-.cardHeader h2 {
-  color: var(--white);
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.cardHeader p {
-  color: var(--white-80);
-  font-size: 14px;
-}
-
 .qrSection {
   text-align: center;
   margin-bottom: 24px;
@@ -155,11 +123,11 @@
   .authCard {
     padding: 30px 20px;
   }
-  
+
   .qrContainer {
     padding: 15px;
   }
-  
+
   .qrContainer img,
   .qrPlaceholder {
     width: 180px;
@@ -171,17 +139,17 @@
   .authCard {
     padding: 20px 15px;
   }
-  
+
   .cardHeader h2 {
     font-size: 20px;
   }
-  
+
   .qrContainer img,
   .qrPlaceholder {
     width: 160px;
     height: 160px;
   }
-  
+
   .qrInstructions {
     font-size: 13px;
   }

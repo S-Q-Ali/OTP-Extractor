@@ -4,6 +4,7 @@ const path = require("path");
 
 const logsDir = path.join(__dirname, "../logs");
 const logFile = path.join(logsDir, "logs.json");
+const LOG_RETENTION_DAYS = 30;
 
 // ✅ Ensure logs directory exists
 function ensureLogsDirectory() {
@@ -36,6 +37,9 @@ async function appendLog(data) {
       }
     }
 
+    // Before adding logs cleanup
+    logs = cleanupOldLogs(logs);
+
     logs.push({
       timestamp: new Date().toISOString(),
       ...data,
@@ -65,13 +69,30 @@ async function getLogs() {
   try {
     if (fs.existsSync(logFile)) {
       const fileContent = fs.readFileSync(logFile, "utf8");
-      return JSON.parse(fileContent);
+      let logs = JSON.parse(fileContent);
+      logs = cleanupOldLogs(logs);
+      return logs;
     }
     return [];
   } catch (error) {
     console.error("❌ Failed to read logs:", error);
     return [];
   }
+}
+
+// Clean up logs
+function cleanupOldLogs(logs) {
+  const cutoff = Date.now() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
+  return logs.filter((log) => {
+    if (!log.timestamp) return false;
+
+    const logTime = Date.parse(log.timestamp);
+
+    if (isNaN(logTime)) return false;
+
+    return logTime >= cutoff;
+  });
 }
 
 // ✅ Clear all logs
