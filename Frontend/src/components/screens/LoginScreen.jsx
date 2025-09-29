@@ -38,10 +38,11 @@ const LoginScreen = ({ onLogin, onShowTOTP, onShowQR }) => {
 
       if (response.requiresOtp) {
         toast.success("Password valid. Please enter your TOTP code");
-        onShowTOTP(email);
+        onShowTOTP(email, response.requiresOtp);
       } else {
         toast.success("Login successful");
-        onLogin(email);
+        onLogin(email, "", response.requiresOtp);
+        onShowQR(email, response.qrCode);
       }
     } catch (error) {
       if (error.message.includes("Invalid email or password")) {
