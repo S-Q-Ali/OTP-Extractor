@@ -13,12 +13,11 @@ const QrSetupScreen = ({
   userEmail,
   onVerify,
   onBack,
+  isVerified,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [verificationAttempted, setVerificationAttempted] = useState(false);
   const otpInputRef = useRef();
-
-  console.log("qrcoded data", qrCodeData);
 
   const handleSubmit = useCallback(
     async (code) => {
@@ -33,14 +32,10 @@ const QrSetupScreen = ({
       setVerificationAttempted(true);
 
       try {
-        const response = await apiRequest(API_ENDPOINTS.VERIFY_OTP, {
+        await apiRequest(API_ENDPOINTS.VERIFY_OTP, {
           method: "POST",
           body: JSON.stringify({ email: userEmail, token: code }),
         });
-
-        const data = await response.json();
-
-        console.log("data in qrsetup screen", data);
 
         toast.success("TOTP verified successfully!");
         onVerify(code);
@@ -60,59 +55,55 @@ const QrSetupScreen = ({
 
   return (
     <div id="qr-setup-screen" className={`${styles.authCard} ${styles.active}`}>
-      {qrCodeData ? (
-        <FormHeader
-          icon={"fas fa-qrcode"}
-          heading={"Setup Two-Factor Authentication"}
-          message={"Scan the QR code with your authenticator app"}
-          onBack={onBack}
-        />
+      {isVerified ? (
+        <>
+          <FormHeader
+            icon={"fas fa-shield-alt"}
+            heading={"Two-Factor Verification"}
+            message={"Enter the 6-digit code from your authenticator app"}
+            onBack={onBack}
+          />
+
+          <Loader isLoading={isLoading}>
+            <div className={styles.authForm}>
+              <OtpInput
+                onComplete={handleSubmit}
+                ref={otpInputRef}
+                length={6}
+              />
+            </div>
+          </Loader>
+        </>
       ) : (
-        <FormHeader
-          icon={"fas fa-shield-alt"}
-          heading={"Two-Factor Verification"}
-          message={"Enter the 6-digit code from your authenticator app"}
-          onBack={onBack}
-        />
-      )}
+        <>
+          <FormHeader
+            icon={"fas fa-qrcode"}
+            heading={"Setup Two-Factor Authentication"}
+            message={"Scan the QR code with your authenticator app"}
+            onBack={onBack}
+          />
 
-      {qrCodeData && (
-        <div className={styles.qrSection}>
-          <div className={styles.qrContainer}>
-            <img src={qrCodeData} alt="TOTP QR Code" />
-          </div>
-          <p className={styles.qrInstructions}>
-            Scan this QR code with Google Authenticator or Microsoft
-            Authenticator app
-          </p>
-        </div>
-      )}
-
-      <Loader isLoading={isLoading}>
-        <div className={styles.authForm}>
-          <OtpInput onComplete={handleSubmit} ref={otpInputRef} length={6} />
-
-          {/* <div className={styles.formFooter}>
-            <p>
-              Didn't receive code?
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  toast.success("Code resent successfully!");
-                }}
-              >
-                Resend
-              </a>
+          <div className={styles.qrSection}>
+            <div className={styles.qrContainer}>
+              <img src={qrCodeData} alt="TOTP QR Code" />
+            </div>
+            <p className={styles.qrInstructions}>
+              Scan this QR code with Google Authenticator or Microsoft
+              Authenticator app
             </p>
-          </div> */}
-        </div>
-      </Loader>
+          </div>
 
-      <Button onClick={onContinue} className={styles.primaryBtn}>
-        <i className="fas fa-arrow-right"></i>
-        Continue to Verification
-      </Button>
+          <Loader isLoading={isLoading}>
+            <div className={styles.authForm}>
+              <OtpInput
+                onComplete={handleSubmit}
+                ref={otpInputRef}
+                length={6}
+              />
+            </div>
+          </Loader>
+        </>
+      )}
 
       <div className={styles.formFooter}>
         <div className={styles.termsNotice}>
