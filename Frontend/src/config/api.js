@@ -1,12 +1,11 @@
 // src/config/api.js
-const API_BASE_URL = 'http://localhost:3000';
-
+const API_BASE =import.meta.env.VITE_API_BASE || 'http://localhost:3000';
 
 export const API_ENDPOINTS = {
-  REGISTER: `${API_BASE_URL}/auth/register`,
-  LOGIN: `${API_BASE_URL}/auth/login`,
-  VERIFY_OTP: `${API_BASE_URL}/auth/verify-otp`,
-  GHL_OTP:`${API_BASE_URL}/ghl/get-ghl-otp`
+  REGISTER: `${API_BASE}auth/register`,
+  LOGIN: `${API_BASE}auth/login`,
+  VERIFY_OTP: `${API_BASE}auth/verify-otp`,
+  GHL_OTP:`${API_BASE}ghl/get-ghl-otp`
 };
 
 const SHARED_KEY=import.meta.env.VITE_SHARED_KEY;
