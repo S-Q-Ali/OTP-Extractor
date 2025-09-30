@@ -27,7 +27,7 @@ app.use("/auth",secretRoute);
 app.use("/ghl",ghlRoute);
 
 //LOCAL SERVER
-const PORT = 3000;
+const PORT = process.env.VITE_API_BASE || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
