@@ -2,10 +2,10 @@
 const API_BASE =import.meta.env.VITE_API_BASE;
 
 export const API_ENDPOINTS = {
-  REGISTER: `${API_BASE}auth/register`,
-  LOGIN: `${API_BASE}auth/login`,
-  VERIFY_OTP: `${API_BASE}auth/verify-otp`,
-  GHL_OTP:`${API_BASE}ghl/get-ghl-otp`
+  REGISTER: `${API_BASE}/auth/register`,
+  LOGIN: `${API_BASE}/auth/login`,
+  VERIFY_OTP: `${API_BASE}/auth/verify-otp`,
+  GHL_OTP:`${API_BASE}/ghl/get-ghl-otp`
 };
 
 const SHARED_KEY=import.meta.env.VITE_SHARED_KEY;
