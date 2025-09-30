@@ -1,6 +1,7 @@
 // src/config/api.js
 const API_BASE_URL = 'http://localhost:3000';
 
+
 export const API_ENDPOINTS = {
   REGISTER: `${API_BASE_URL}/auth/register`,
   LOGIN: `${API_BASE_URL}/auth/login`,
@@ -8,11 +9,15 @@ export const API_ENDPOINTS = {
   GHL_OTP:`${API_BASE_URL}/ghl/get-ghl-otp`
 };
 
+const SHARED_KEY=import.meta.env.VITE_SHARED_KEY;
+const encodedKey=btoa(SHARED_KEY);
+
 export const apiRequest = async (url, options = {}) => {
   const defaultOptions = {
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
+      "X-APP-KEY":encodedKey,
     },
   };
 
