@@ -128,8 +128,11 @@ async function verifyTotp(req, res) {
     const users = readUsers();
     const user = users.users[email];
 
+    console.log("user in verifyTotp", user);
+
     if (!user) {
-      await logger.logVerifyTotp(email, "failure", "user_not_found", {
+      console.log("if block working");
+      logger.logVerifyTotp(email, "failure", "user_not_found", {
         ip: getClientIp(req),
         method: "totp",
       });
@@ -145,7 +148,7 @@ async function verifyTotp(req, res) {
     });
 
     if (!isValid) {
-      await logger.logVerifyTotp(email, "failure", "invalid_or_expired_totp", {
+      logger.logVerifyTotp(email, "failure", "invalid_or_expired_totp", {
         ip: getClientIp(req),
         method: "totp",
         provided_token: token,
@@ -160,7 +163,7 @@ async function verifyTotp(req, res) {
     user.is_verified = true;
     writeUsers(users);
 
-    await logger.logVerifyTotp(email, "success", "otp_verified", {
+    logger.logVerifyTotp(email, "success", "otp_verified", {
       ip: getClientIp(req),
       method: "totp",
     });
@@ -174,16 +177,11 @@ async function verifyTotp(req, res) {
     });
   } catch (err) {
     invalidateUsersCache();
-    await logger.logVerifyTotp(
-      req.body.email,
-      "error",
-      "internal_server_error",
-      {
-        ip: getClientIp(req),
-        method: "totp",
-        error: err.message,
-      }
-    );
+    logger.logVerifyTotp(req.body.email, "error", "internal_server_error", {
+      ip: getClientIp(req),
+      method: "totp",
+      error: err.message,
+    });
 
     res.status(500).json({
       message: "Server error during verification",
