@@ -2348,19 +2348,7 @@
     }
   },
   {
-    "timestamp": "2025-09-25T17:15:52.389Z",
-    "action": "login",
-    "email": "qasimvamatters@gmail.com",
-    "status": "failure",
-    "reason": "user_not_found",
-    "meta": {
-      "ip": "::1"
-    }
-  },
-  {
-    "timestamp": "2025-09-25T17:15:52.514Z",
-    "action": "register",
-    "email": "qasimvamatters@gmail.com",
+
     "status": "success",
     "reason": "new_user_created",
     "meta": {
@@ -2369,31 +2357,13 @@
     }
   },
   {
-    "timestamp": "2025-09-25T17:15:58.277Z",
-    "action": "verify-totp",
-    "email": "qasimvamatters@gmail.com",
+
     "status": "failure",
     "reason": "invalid_or_expired_totp",
     "meta": {
       "ip": "::1",
       "method": "totp",
-      "provided_token": "111111"
-    }
-  },
-  {
-    "timestamp": "2025-09-25T17:27:06.398Z",
-    "action": "login",
-    "email": "qasimvamatters@gmail.com",
-    "status": "failure",
-    "reason": "invalid_password",
-    "meta": {
-      "ip": "::1"
-    }
-  },
-  {
-    "timestamp": "2025-09-25T17:27:06.409Z",
-    "action": "register",
-    "email": "qasimvamatters@gmail.com",
+<<<
     "status": "failure",
     "reason": "user_already_exists",
     "meta": {
@@ -2401,9 +2371,7 @@
     }
   },
   {
-    "timestamp": "2025-09-26T15:08:55.686Z",
-    "action": "login",
-    "email": "test1@gmail.com",
+
     "status": "failure",
     "reason": "user_not_found",
     "meta": {
@@ -2411,14 +2379,632 @@
     }
   },
   {
-    "timestamp": "2025-09-26T15:08:55.802Z",
-    "action": "register",
-    "email": "test1@gmail.com",
+",
     "status": "success",
     "reason": "new_user_created",
     "meta": {
       "ip": "::1",
       "has_2fa": true
     }
-  }
+  },
+  {
+    "timestamp": "2025-09-26T18:18:40.031Z",
+    "action": "login",
+    "email": "solo@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-26T18:22:22.808Z",
+    "action": "login",
+    "email": "john@example.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-26T18:22:22.896Z",
+    "action": "register",
+    "email": "john@example.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-26T18:22:56.487Z",
+    "action": "login",
+    "email": "johncena@example.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-26T18:22:56.585Z",
+    "action": "register",
+    "email": "johncena@example.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-26T18:23:21.778Z",
+    "action": "login",
+    "email": "john@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-26T18:55:52.330Z",
+    "action": "login",
+    "email": "johncena@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:41:18.182Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "is_verified is not defined"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:41:35.826Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "is_verified is not defined"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:44:39.871Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "is_verified is not defined"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:45:42.885Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "is_verified is not defined"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:46:30.783Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "is_verified is not defined"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:48:18.454Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:49:31.840Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "is_verified is not defined"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:50:00.724Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "is_verified is not defined"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:50:45.386Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:52:43.851Z",
+    "action": "login",
+    "email": "jin@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:53:22.104Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:54:25.359Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T10:56:06.391Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:06:11.861Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:06:59.961Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:07:14.966Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:22:06.168Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:28:33.871Z",
+    "action": "login",
+    "email": "newUser3@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:32:20.016Z",
+    "action": "login",
+    "email": "haeeb@example.com",
+    "status": "error",
+    "reason": "internal_server_error",
+    "meta": {
+      "ip": "::1",
+      "error": "Cannot read properties of undefined (reading 'is_verified')"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:34:41.698Z",
+    "action": "login",
+    "email": "haseeb@gmail.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:34:41.895Z",
+    "action": "register",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T11:37:27.952Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:04:22.083Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:06:16.492Z",
+    "action": "login",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:09:39.530Z",
+    "action": "login",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:13:31.305Z",
+    "action": "login",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:15:15.651Z",
+    "action": "login",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:17:32.586Z",
+    "action": "login",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:18:36.506Z",
+    "action": "login",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:18:43.290Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:19:52.340Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:20:32.656Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:21:52.433Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:22:43.946Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:22:43.979Z",
+    "action": "verify-totp",
+    "email": "haseeb@gmail.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:23:19.509Z",
+    "action": "login",
+    "email": "tanjiro@example.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:23:19.638Z",
+    "action": "register",
+    "email": "tanjiro@example.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:25:20.085Z",
+    "action": "login",
+    "email": "tanjiro@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:27:24.788Z",
+    "action": "login",
+    "email": "tanjiro@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:28:30.691Z",
+    "action": "login",
+    "email": "tanjiro@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:29:47.285Z",
+    "action": "login",
+    "email": "tanjiro@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:30:06.633Z",
+    "action": "login",
+    "email": "tanjiro@example.com",
+    "status": "success",
+    "reason": "password_valid",
+    "meta": {
+      "ip": "::1",
+      "requires_otp": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:30:36.246Z",
+    "action": "login",
+    "email": "muzan@example.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:30:36.383Z",
+    "action": "register",
+    "email": "muzan@example.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:31:03.315Z",
+    "action": "verify-totp",
+    "email": "muzan@example.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:31:03.339Z",
+    "action": "verify-totp",
+    "email": "muzan@example.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:36:42.222Z",
+    "action": "login",
+    "email": "abdullah@example.com",
+    "status": "failure",
+    "reason": "user_not_found",
+    "meta": {
+      "ip": "::1"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:36:42.356Z",
+    "action": "register",
+    "email": "abdullah@example.com",
+    "status": "success",
+    "reason": "new_user_created",
+    "meta": {
+      "ip": "::1",
+      "has_2fa": true
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:37:08.634Z",
+    "action": "verify-totp",
+    "email": "abdullah@example.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
+  },
+  {
+    "timestamp": "2025-09-29T12:37:08.652Z",
+    "action": "verify-totp",
+    "email": "abdullah@example.com",
+    "status": "success",
+    "reason": "otp_verified",
+    "meta": {
+      "ip": "::1",
+      "method": "totp"
+    }
 ]
