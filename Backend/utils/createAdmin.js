@@ -23,7 +23,6 @@ async function createInitialAdmin() {
     users.users[adminEmail] = {
       id: adminEmail,
       adminEmail,
-      name: "Admin user",
       password: hashedPassword,
       secret: secret.base32,
       qrCode: qrCodeDataUrl,
