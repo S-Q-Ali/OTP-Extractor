@@ -10,6 +10,7 @@ const {
 } = require("../utils/userHelpers");
 const { getClientIp } = require("../utils/helpers");
 
+
 // REGISTER
 async function register(req, res) {
   try {
@@ -43,6 +44,10 @@ async function register(req, res) {
       secret: secret.base32,
       qrCode: qrCodeDataUrl,
       is_verified: false,
+      role:"user",
+      status:"active",
+      created_at:new Date().toISOString(),
+      updated_at:new Date().toISOString(),
     };
 
     writeUsers(users);
@@ -84,22 +89,29 @@ async function login(req, res) {
     const user = users.users[email];
 
     if (!user) {
-      await logger.logLogin(email, "failure", "user_not_found", {
+      logger.logLogin(email, "failure", "user_not_found", {
         ip: getClientIp(req),
       });
       return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    if(user.status!=='active'){
+      logger.logLogin(email,"failure","user_interface",{
+        ip:getClientIp(req),
+      });
+      return res.status(401).json({message:"Account is inactive.Please contact admin."});
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      await logger.logLogin(email, "failure", "invalid_password", {
+      logger.logLogin(email, "failure", "invalid_password", {
         ip: getClientIp(req),
       });
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    await logger.logLogin(email, "success", "password_valid", {
+    logger.logLogin(email, "success", "password_valid", {
       ip: getClientIp(req),
       requires_otp: true,
     });
@@ -110,7 +122,7 @@ async function login(req, res) {
       qrCode: user.qrCode,
     });
   } catch (err) {
-    await logger.logLogin(req.body.email, "error", "internal_server_error", {
+    logger.logLogin(req.body.email, "error", "internal_server_error", {
       ip: getClientIp(req),
       error: err.message,
     });
@@ -129,11 +141,19 @@ async function verifyTotp(req, res) {
     const user = users.users[email];
 
     if (!user) {
-      await logger.logVerifyTotp(email, "failure", "user_not_found", {
+      logger.logVerifyTotp(email, "failure", "user_not_found", {
         ip: getClientIp(req),
         method: "totp",
       });
       return res.status(401).json({ message: "Invalid user" });
+    }
+
+    if(user.status!=='active'){
+      logger.logVerifyTotp(email,"failure","user_inactive",{
+        ip:getClientIp(req),
+        method:"totp",
+      });
+      return res.status(401).json({message:"Account is inactive. Please contact admin."});
     }
 
     const isValid = speakeasy.totp.verify({
@@ -145,7 +165,7 @@ async function verifyTotp(req, res) {
     });
 
     if (!isValid) {
-      await logger.logVerifyTotp(email, "failure", "invalid_or_expired_totp", {
+      logger.logVerifyTotp(email, "failure", "invalid_or_expired_totp", {
         ip: getClientIp(req),
         method: "totp",
         provided_token: token,
@@ -160,7 +180,7 @@ async function verifyTotp(req, res) {
     user.is_verified = true;
     writeUsers(users);
 
-    await logger.logVerifyTotp(email, "success", "otp_verified", {
+    logger.logVerifyTotp(email, "success", "otp_verified", {
       ip: getClientIp(req),
       method: "totp",
     });
@@ -170,11 +190,12 @@ async function verifyTotp(req, res) {
       user: {
         email,
         name: user.name,
+        role:user.role
       },
     });
   } catch (err) {
     invalidateUsersCache();
-    await logger.logVerifyTotp(
+    logger.logVerifyTotp(
       req.body.email,
       "error",
       "internal_server_error",
